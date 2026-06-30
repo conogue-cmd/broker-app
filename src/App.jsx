@@ -129,8 +129,9 @@ function KPI({ label, value, sub, color }) {
 }
 
 // ─── MODAL DETALLE ────────────────────────────────────────────────────────────
-function ModalDetalle({ prop, onClose, onSave }) {
+function ModalDetalle({ prop, onClose, onSave, onDelete }) {
   const [editando, setEditando] = useState(false);
+  const [confirmandoBorrado, setConfirmandoBorrado] = useState(false);
   const [form, setForm] = useState({ ...prop });
 
   const campo = (label, key, tipo = "text") => (
@@ -176,8 +177,17 @@ function ModalDetalle({ prop, onClose, onSave }) {
                 <button onClick={() => { onSave(form); setEditando(false); }} style={{ padding: "6px 14px", background: "#1B6B3A", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Guardar</button>
                 <button onClick={() => { setForm({ ...prop }); setEditando(false); }} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Cancelar</button>
               </>
+            ) : confirmandoBorrado ? (
+              <>
+                <span style={{ fontSize: 12, color: "#A32D2D", alignSelf: "center", marginRight: 4 }}>¿Eliminar definitivamente?</span>
+                <button onClick={() => onDelete(prop.id)} style={{ padding: "6px 14px", background: "#A32D2D", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Sí, eliminar</button>
+                <button onClick={() => setConfirmandoBorrado(false)} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Cancelar</button>
+              </>
             ) : (
-              <button onClick={() => setEditando(true)} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Editar</button>
+              <>
+                <button onClick={() => setEditando(true)} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Editar</button>
+                <button onClick={() => setConfirmandoBorrado(true)} style={{ padding: "6px 14px", background: "#fcebeb", color: "#A32D2D", border: "1px solid #f0c9c9", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Eliminar</button>
+              </>
             )}
             <button onClick={onClose} style={{ padding: "6px 10px", background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>×</button>
           </div>
@@ -218,17 +228,83 @@ function ModalDetalle({ prop, onClose, onSave }) {
   );
 }
 
-// ─── MODAL NUEVO COBRO ────────────────────────────────────────────────────────
+// ─── MODAL NUEVO COBRO (con carga por foto) ──────────────────────────────────
 function ModalCobro({ prop, onClose, onGuardar }) {
   const hoy = new Date().toISOString().split("T")[0];
   const [form, setForm] = useState({ fecha: hoy, monto: prop?.alq_1 || "", moneda: "ARS", mes: "", anio: new Date().getFullYear(), concepto: "Alquiler", notas: "" });
+  const [analizando, setAnalizando] = useState(false);
+  const [errorFoto, setErrorFoto] = useState("");
+  const [fotoNombre, setFotoNombre] = useState("");
   const meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  function fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(",")[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleFoto(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFotoNombre(file.name);
+    setErrorFoto("");
+    setAnalizando(true);
+    try {
+      const base64 = await fileToBase64(file);
+      const mediaType = file.type || "image/jpeg";
+
+      const response = await fetch("/api/leer-comprobante", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ base64, mediaType }),
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Error al leer el comprobante");
+
+      const textBlock = data.content?.find((b) => b.type === "text");
+      if (!textBlock) throw new Error("Sin respuesta de texto");
+
+      let cleaned = textBlock.text.trim().replace(/```json|```/g, "").trim();
+      const parsed = JSON.parse(cleaned);
+
+      setForm((f) => ({
+        ...f,
+        monto: parsed.monto != null ? String(parsed.monto) : f.monto,
+        moneda: parsed.moneda || f.moneda,
+        fecha: parsed.fecha || f.fecha,
+        notas: parsed.notas || f.notas,
+      }));
+    } catch (err) {
+      console.error(err);
+      setErrorFoto("No se pudo leer el comprobante automáticamente. Completá los datos a mano.");
+    } finally {
+      setAnalizando(false);
+    }
+  }
+
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "min(480px, 96vw)", padding: 28 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "min(480px, 96vw)", padding: 28, maxHeight: "92vh", overflow: "auto" }}>
         <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>Registrar cobro</div>
-        <div style={{ fontSize: 13, color: "#888", marginBottom: 20 }}>{prop?.direccion}</div>
+        <div style={{ fontSize: 13, color: "#888", marginBottom: 16 }}>{prop?.direccion}</div>
+
+        <label style={{ display: "block", border: "1.5px dashed #c8e0d0", borderRadius: 10, padding: "14px 12px", textAlign: "center", cursor: "pointer", background: "#f7fbf8", marginBottom: 16 }}>
+          <input type="file" accept="image/*" onChange={handleFoto} style={{ display: "none" }} />
+          {analizando ? (
+            <span style={{ fontSize: 13, color: "#1B6B3A", fontWeight: 500 }}>Leyendo comprobante...</span>
+          ) : fotoNombre ? (
+            <span style={{ fontSize: 13, color: "#1B6B3A" }}>✓ {fotoNombre} — datos completados, revisá antes de guardar</span>
+          ) : (
+            <span style={{ fontSize: 13, color: "#1B6B3A", fontWeight: 500 }}>📷 Subir foto del comprobante (opcional)</span>
+          )}
+        </label>
+        {errorFoto && <div style={{ fontSize: 12, color: "#A32D2D", marginBottom: 12, marginTop: -8 }}>{errorFoto}</div>}
+
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div>
             <label style={{ fontSize: 12, color: "#888" }}>Concepto</label>
@@ -338,6 +414,118 @@ function ModalNueva({ onClose, onGuardar }) {
   );
 }
 
+// ─── PESTAÑA PLANILLA: vista tipo Excel con todas las columnas ───────────────
+const COLUMNAS_PLANILLA = [
+  { key: "unidad", label: "Unidad", w: 60 },
+  { key: "titular", label: "Titular", w: 70 },
+  { key: "direccion", label: "Dirección", w: 220 },
+  { key: "estado", label: "Estado", w: 90 },
+  { key: "inquilino", label: "Inquilino", w: 180 },
+  { key: "dni", label: "DNI/CUIT", w: 110 },
+  { key: "periodo", label: "Período", w: 170 },
+  { key: "inmobiliaria", label: "Inmobiliaria", w: 130 },
+  { key: "comision", label: "Comisión", w: 80 },
+  { key: "alq_1", label: "Alq. 1° año", w: 100 },
+  { key: "alq_2", label: "Alq. 2° año", w: 100 },
+  { key: "expensas", label: "Expensas", w: 90 },
+  { key: "fecha_pago", label: "Fecha pago", w: 130 },
+  { key: "mts2", label: "M²", w: 60 },
+  { key: "ambientes", label: "Ambientes", w: 80 },
+  { key: "cochera", label: "Cochera", w: 90 },
+  { key: "baulera", label: "Baulera", w: 90 },
+  { key: "valor_compra", label: "Val. compra", w: 100 },
+  { key: "valor_mercado", label: "Val. mercado", w: 110 },
+  { key: "deposito", label: "Depósito", w: 110 },
+  { key: "telefono", label: "Teléfono", w: 120 },
+  { key: "mail", label: "Mail", w: 180 },
+  { key: "impuesto", label: "Impuesto inmob.", w: 160 },
+  { key: "nro_partida", label: "N° Partida", w: 140 },
+  { key: "admin_edificio", label: "Adm. edificio", w: 200 },
+];
+
+function PlanillaCelda({ valor, onCommit }) {
+  const [editando, setEditando] = useState(false);
+  const [val, setVal] = useState(valor || "");
+
+  useEffect(() => { setVal(valor || ""); }, [valor]);
+
+  if (editando) {
+    return (
+      <input
+        autoFocus
+        value={val}
+        onChange={(e) => setVal(e.target.value)}
+        onBlur={() => { setEditando(false); if (val !== (valor || "")) onCommit(val); }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") e.target.blur();
+          if (e.key === "Escape") { setVal(valor || ""); setEditando(false); }
+        }}
+        style={{ width: "100%", border: "1.5px solid #1B6B3A", borderRadius: 3, padding: "3px 5px", fontSize: 12, fontFamily: "inherit" }}
+      />
+    );
+  }
+  return (
+    <div onClick={() => setEditando(true)} title="Clic para editar"
+      style={{ padding: "5px 6px", cursor: "text", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+      {valor || <span style={{ color: "#d8d8d4" }}>—</span>}
+    </div>
+  );
+}
+
+function PlanillaTab({ props, onUpdateCell }) {
+  const [busqueda, setBusqueda] = useState("");
+  const filtradas = props.filter((p) => {
+    const txt = (p.direccion + " " + p.inquilino).toLowerCase();
+    return !busqueda || txt.includes(busqueda.toLowerCase());
+  });
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+        <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Planilla completa</div>
+        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, width: 220 }} />
+      </div>
+      <div style={{ fontSize: 12, color: "#888", marginBottom: 10 }}>
+        Hacé clic en cualquier celda para editarla. Los cambios se guardan automáticamente al salir del campo (Enter o clic afuera).
+      </div>
+      <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #eee", overflow: "auto", maxWidth: "100%" }}>
+        <table style={{ borderCollapse: "collapse", fontSize: 12, tableLayout: "fixed" }}>
+          <thead>
+            <tr style={{ background: "#f7f6f3" }}>
+              {COLUMNAS_PLANILLA.map((c) => (
+                <th key={c.key} style={{ position: "sticky", top: 0, background: "#f7f6f3", padding: "8px 6px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 10.5, textTransform: "uppercase", borderBottom: "1px solid #eee", borderRight: "1px solid #f0f0f0", width: c.w, minWidth: c.w }}>
+                  {c.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {filtradas.map((p, i) => (
+              <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#fafaf9" }}>
+                {COLUMNAS_PLANILLA.map((c) => (
+                  <td key={c.key} style={{ borderRight: "1px solid #f0f0f0", borderBottom: "1px solid #f5f5f3", padding: 0 }}>
+                    {c.key === "estado" ? (
+                      <select value={p.estado} onChange={(e) => onUpdateCell(p.id, "estado", e.target.value)}
+                        style={{ width: "100%", border: "none", background: "transparent", fontSize: 12, padding: "5px 4px", fontFamily: "inherit" }}>
+                        <option value="alquilado">Alquilado</option>
+                        <option value="libre">Libre</option>
+                        <option value="vendido">Vendido</option>
+                      </select>
+                    ) : (
+                      <PlanillaCelda valor={p[c.key]} onCommit={(v) => onUpdateCell(p.id, c.key, v)} />
+                    )}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div style={{ marginTop: 8, fontSize: 12, color: "#aaa" }}>{filtradas.length} de {props.length} propiedades · {COLUMNAS_PLANILLA.length} columnas</div>
+    </div>
+  );
+}
+
 // ─── APP PRINCIPAL ────────────────────────────────────────────────────────────
 export default function App() {
   const [props, setProps] = useState([]);
@@ -412,6 +600,25 @@ export default function App() {
     setPropSel(null);
   }
 
+  async function actualizarCelda(id, campo, valor) {
+    const { error } = await supabase.from("propiedades").update({ [campo]: valor }).eq("id", id);
+    if (!error) {
+      setProps((ps) => ps.map((p) => (p.id === id ? { ...p, [campo]: valor } : p)));
+    } else {
+      alert("Error al guardar: " + error.message);
+    }
+  }
+
+  async function eliminarProp(id) {
+    const { error } = await supabase.from("propiedades").delete().eq("id", id);
+    if (!error) {
+      setProps((ps) => ps.filter((p) => p.id !== id));
+      setPropSel(null);
+    } else {
+      alert("Error al eliminar: " + error.message);
+    }
+  }
+
   async function guardarCobro(cobro) {
     const { data, error } = await supabase.from("cobros").insert([cobro]).select();
     if (!error) {
@@ -436,22 +643,41 @@ export default function App() {
     const wb = XLSX.utils.book_new();
 
     const propsExport = props.map((p) => ({
-      Unidad: p.unidad, Titular: p.titular, Dirección: p.direccion, Estado: p.estado,
+      ID: p.id, Unidad: p.unidad, Titular: p.titular, Dirección: p.direccion, Estado: p.estado,
       Inquilino: p.inquilino, DNI: p.dni, Período: p.periodo, Inmobiliaria: p.inmobiliaria,
-      "Alquiler 1° año": p.alq_1, "Alquiler 2° año": p.alq_2, Expensas: p.expensas,
-      "M2": p.mts2, Ambientes: p.ambientes, Cochera: p.cochera, Baulera: p.baulera,
+      Comisión: p.comision, "Alquiler 1° año": p.alq_1, "Alquiler 2° año": p.alq_2, Expensas: p.expensas,
+      "Fecha de pago": p.fecha_pago, "M2": p.mts2, Ambientes: p.ambientes, Cochera: p.cochera, Baulera: p.baulera,
       "Valor compra": p.valor_compra, "Valor mercado": p.valor_mercado, Depósito: p.deposito,
-      Teléfono: p.telefono, Mail: p.mail, "N° Partida": p.nro_partida, "Adm. edificio": p.admin_edificio,
+      Teléfono: p.telefono, Mail: p.mail, "Impuesto inmobiliario": p.impuesto, "N° Partida": p.nro_partida,
+      "Adm. edificio": p.admin_edificio,
     }));
     const wsProps = XLSX.utils.json_to_sheet(propsExport);
     XLSX.utils.book_append_sheet(wb, wsProps, "Propiedades");
 
     const cobrosExport = cobros.map((c) => ({
-      Fecha: c.fecha, Dirección: c.direccion, Inquilino: c.inquilino, Concepto: c.concepto,
-      Mes: c.mes, Año: c.anio, Monto: c.monto, Moneda: c.moneda, Notas: c.notas,
+      ID: c.id, "ID Propiedad": c.prop_id, Fecha: c.fecha, Dirección: c.direccion, Inquilino: c.inquilino,
+      Concepto: c.concepto, Mes: c.mes, Año: c.anio, Monto: c.monto, Moneda: c.moneda, Notas: c.notas,
     }));
     const wsCobros = XLSX.utils.json_to_sheet(cobrosExport);
     XLSX.utils.book_append_sheet(wb, wsCobros, "Cobros");
+
+    const wsInfo = XLSX.utils.aoa_to_sheet([
+      ["COPIA DE SEGURIDAD — Gestión Inmobiliaria"],
+      [""],
+      ["Fecha de exportación:", new Date().toLocaleString("es-AR")],
+      ["Total de propiedades:", props.length],
+      ["Total de cobros registrados:", cobros.length],
+      [""],
+      ["Este archivo es un respaldo completo de los datos cargados en la app."],
+      ["Si en algún momento hay un problema con los servidores (Vercel o Supabase),"],
+      ["este Excel contiene toda la información necesaria para reconstruir el portfolio:"],
+      ["- Hoja 'Propiedades': todos los datos de cada unidad"],
+      ["- Hoja 'Cobros': historial completo de pagos registrados"],
+      [""],
+      ["Recomendación: descargar este backup una vez por semana o luego de cargar"],
+      ["varios cobros nuevos, y guardarlo en Google Drive o Dropbox."],
+    ]);
+    XLSX.utils.book_append_sheet(wb, wsInfo, "Info del backup");
 
     const fecha = new Date().toISOString().split("T")[0];
     XLSX.writeFile(wb, `backup_inmuebles_${fecha}.xlsx`);
@@ -460,6 +686,7 @@ export default function App() {
   const NAV = [
     { id: "dashboard", label: "Dashboard" },
     { id: "propiedades", label: "Propiedades" },
+    { id: "planilla", label: "Planilla" },
     { id: "cobros", label: "Cobros" },
     { id: "alertas", label: `Alertas${stats.vencidos + stats.proximos > 0 ? ` (${stats.vencidos + stats.proximos})` : ""}` },
   ];
@@ -486,7 +713,7 @@ export default function App() {
         ))}
         <div style={{ flex: 1 }} />
         <button onClick={exportarExcel} style={{ padding: "7px 14px", background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>
-          Exportar Excel
+          Copia de seguridad
         </button>
         <button onClick={() => setNuevaModal(true)} style={{ padding: "7px 14px", background: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>
           + Nueva propiedad
@@ -600,6 +827,10 @@ export default function App() {
           </div>
         )}
 
+        {tab === "planilla" && (
+          <PlanillaTab props={props} onUpdateCell={actualizarCelda} />
+        )}
+
         {tab === "cobros" && (
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
@@ -687,7 +918,7 @@ export default function App() {
         )}
       </div>
 
-      {propSel && <ModalDetalle prop={propSel} onClose={() => setPropSel(null)} onSave={guardarProp} />}
+      {propSel && <ModalDetalle prop={propSel} onClose={() => setPropSel(null)} onSave={guardarProp} onDelete={eliminarProp} />}
       {cobroModal && <ModalCobro prop={cobroModal} onClose={() => setCobroModal(null)} onGuardar={guardarCobro} />}
       {nuevaModal && <ModalNueva onClose={() => setNuevaModal(false)} onGuardar={guardarNueva} />}
     </div>
