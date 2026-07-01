@@ -104,7 +104,7 @@ const COLORES_SEMAFORO = {
   proximo: { bg: "#faeeda", color: "#fab387", label: "Próximo a vencer" },
   vencido: { bg: "#fcebeb", color: "#f38ba8", label: "Vencido" },
   libre: { bg: "#e6f1fb", color: "#89b4fa", label: "Libre / Sin inquilino" },
-  vendido: { bg: "#f1efe8", color: "#a0a0c0", label: "Vendido" },
+  vendido: { bg: "#f1efe8", color: "#c0c0e0", label: "Vendido" },
   "sin-fecha": { bg: "#fbeaf0", color: "#cba6f7", label: "Sin fecha" },
 };
 
@@ -121,9 +121,9 @@ function Badge({ tipo }) {
 function KPI({ label, value, sub, color }) {
   return (
     <div style={{ background: "#252538", borderRadius: 8, padding: "14px 18px", minWidth: 110 }}>
-      <div style={{ fontSize: 12, color: "#a0a0c0", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 12, color: "#c0c0e0", marginBottom: 4 }}>{label}</div>
       <div style={{ fontSize: 24, fontWeight: 600, color: color || "#e0e0f0" }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: "#7070a0", marginTop: 2 }}>{sub}</div>}
+      {sub && <div style={{ fontSize: 11, color: "#c0c0e0", marginTop: 2 }}>{sub}</div>}
     </div>
   );
 }
@@ -136,7 +136,7 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
 
   const campo = (label, key, tipo = "text") => (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 11, color: "#a0a0c0", marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 11, color: "#c0c0e0", marginBottom: 2 }}>{label}</div>
       {editando ? (
         <input
           type={tipo}
@@ -164,11 +164,11 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <Badge tipo={sem} />
               {dias !== null && sem !== "vendido" && (
-                <span style={{ fontSize: 11, color: "#a0a0c0", padding: "2px 8px", background: "#2d2b55", borderRadius: 4 }}>
+                <span style={{ fontSize: 11, color: "#c0c0e0", padding: "2px 8px", background: "#2d2b55", borderRadius: 4 }}>
                   {dias < 0 ? `Venció hace ${Math.abs(dias)} días` : `Vence en ${dias} días`}
                 </span>
               )}
-              <span style={{ fontSize: 11, color: "#a0a0c0", padding: "2px 8px", background: "#2d2b55", borderRadius: 4 }}>Titular: {prop.titular}</span>
+              <span style={{ fontSize: 11, color: "#c0c0e0", padding: "2px 8px", background: "#2d2b55", borderRadius: 4 }}>Titular: {prop.titular}</span>
             </div>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
@@ -189,13 +189,13 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
                 <button onClick={() => setConfirmandoBorrado(true)} style={{ padding: "6px 14px", background: "#3a1e1e", color: "#f38ba8", border: "1px solid #f0c9c9", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Eliminar</button>
               </>
             )}
-            <button onClick={onClose} style={{ padding: "6px 10px", background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#a0a0c0" }}>×</button>
+            <button onClick={onClose} style={{ padding: "6px 10px", background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#c0c0e0" }}>×</button>
           </div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#a0a0c0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Contrato</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#c0c0e0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Contrato</div>
             {campo("Inquilino", "inquilino")}
             {campo("DNI / CUIT", "dni")}
             {campo("Período", "periodo")}
@@ -206,7 +206,7 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
             {campo("Depósito", "deposito")}
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#a0a0c0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Propiedad</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#c0c0e0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Propiedad</div>
             {campo("M²", "mts2")}
             {campo("Ambientes", "ambientes")}
             {campo("Cochera", "cochera")}
@@ -216,7 +216,7 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
             {campo("Expensas", "expensas")}
             {campo("Valor compra U$S", "valor_compra")}
             {campo("Valor mercado", "valor_mercado")}
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#a0a0c0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 16 }}>Administración</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#c0c0e0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 16 }}>Administración</div>
             {campo("Fecha de pago", "fecha_pago")}
             {campo("Impuesto inmobiliario", "impuesto")}
             {campo("N° partida / ABL", "nro_partida")}
@@ -291,7 +291,7 @@ function ModalCobro({ prop, onClose, onGuardar }) {
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div onClick={(e) => e.stopPropagation()} style={{ background: "#252538", borderRadius: 16, width: "min(480px, 96vw)", padding: 28, maxHeight: "92vh", overflow: "auto" }}>
         <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>Registrar cobro</div>
-        <div style={{ fontSize: 13, color: "#a0a0c0", marginBottom: 16 }}>{prop?.direccion}</div>
+        <div style={{ fontSize: 13, color: "#c0c0e0", marginBottom: 16 }}>{prop?.direccion}</div>
 
         <label style={{ display: "block", border: "1.5px dashed #c8e0d0", borderRadius: 10, padding: "14px 12px", textAlign: "center", cursor: "pointer", background: "#252538", marginBottom: 16 }}>
           <input type="file" accept="image/*" onChange={handleFoto} style={{ display: "none" }} />
@@ -307,39 +307,39 @@ function ModalCobro({ prop, onClose, onGuardar }) {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Concepto</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Concepto</label>
             <select value={form.concepto} onChange={(e) => set("concepto", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
               <option>Alquiler</option><option>Expensas</option><option>Depósito</option><option>Otro</option>
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Fecha de cobro</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Fecha de cobro</label>
             <input type="date" value={form.fecha} onChange={(e) => set("fecha", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Mes correspondiente</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Mes correspondiente</label>
             <select value={form.mes} onChange={(e) => set("mes", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
               <option value="">— Mes —</option>
               {meses.map((m, i) => <option key={i} value={m}>{m}</option>)}
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Año</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Año</label>
             <input type="number" value={form.anio} onChange={(e) => set("anio", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Monto</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Monto</label>
             <input type="number" value={form.monto} onChange={(e) => set("monto", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Moneda</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Moneda</label>
             <select value={form.moneda} onChange={(e) => set("moneda", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
               <option>ARS</option><option>USD</option>
             </select>
           </div>
         </div>
         <div style={{ marginTop: 12 }}>
-          <label style={{ fontSize: 12, color: "#a0a0c0" }}>Notas</label>
+          <label style={{ fontSize: 12, color: "#c0c0e0" }}>Notas</label>
           <input type="text" value={form.notas} onChange={(e) => set("notas", e.target.value)} placeholder="Transferencia, efectivo, op. N°..." style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
         </div>
         <div style={{ display: "flex", gap: 10, marginTop: 20, justifyContent: "flex-end" }}>
@@ -359,7 +359,7 @@ function ModalNueva({ onClose, onGuardar }) {
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const inp = (label, key, tipo = "text", ph = "") => (
     <div>
-      <label style={{ fontSize: 12, color: "#a0a0c0" }}>{label}</label>
+      <label style={{ fontSize: 12, color: "#c0c0e0" }}>{label}</label>
       <input type={tipo} value={form[key] || ""} onChange={(e) => set(key, e.target.value)} placeholder={ph} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 3 }} />
     </div>
   );
@@ -370,7 +370,7 @@ function ModalNueva({ onClose, onGuardar }) {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div style={{ gridColumn: "1 / -1" }}>{inp("Dirección *", "direccion", "text", "Ej: Gurruchaga 381 - 5A - CABA")}</div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Titular</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Titular</label>
             <select value={form.titular} onChange={(e) => set("titular", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 3 }}>
               <option value="GC">GC – Gerardo Castillo</option>
               <option value="EC">EC – Eliana Castillo</option>
@@ -379,7 +379,7 @@ function ModalNueva({ onClose, onGuardar }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Estado</label>
+            <label style={{ fontSize: 12, color: "#c0c0e0" }}>Estado</label>
             <select value={form.estado} onChange={(e) => set("estado", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 3 }}>
               <option value="alquilado">Alquilado</option>
               <option value="libre">Libre</option>
@@ -410,6 +410,235 @@ function ModalNueva({ onClose, onGuardar }) {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── PESTAÑA COBROS con filtros, totales e impresión ─────────────────────────
+function CobroTab({ cobros }) {
+  const [filtroInq, setFiltroInq] = useState("");
+  const [filtroDesde, setFiltroDesde] = useState("");
+  const [filtroHasta, setFiltroHasta] = useState("");
+  const [agrupar, setAgrupar] = useState("ninguno");
+
+  const inquilinos = [...new Set(cobros.map(c => c.inquilino).filter(Boolean))].sort();
+
+  const filtrados = cobros.filter(c => {
+    const okInq = !filtroInq || c.inquilino === filtroInq;
+    const okDesde = !filtroDesde || c.fecha >= filtroDesde;
+    const okHasta = !filtroHasta || c.fecha <= filtroHasta;
+    return okInq && okDesde && okHasta;
+  });
+
+  const totalARS = filtrados.filter(c => c.moneda === "ARS").reduce((s, c) => s + (parseFloat(c.monto) || 0), 0);
+  const totalUSD = filtrados.filter(c => c.moneda === "USD").reduce((s, c) => s + (parseFloat(c.monto) || 0), 0);
+
+  // Agrupación
+  let grupos = null;
+  if (agrupar === "inquilino") {
+    const map = {};
+    filtrados.forEach(c => {
+      const k = c.inquilino || "Sin nombre";
+      if (!map[k]) map[k] = [];
+      map[k].push(c);
+    });
+    grupos = Object.entries(map).sort((a, b) => a[0].localeCompare(b[0]));
+  } else if (agrupar === "mes") {
+    const map = {};
+    filtrados.forEach(c => {
+      const k = `${c.anio}-${c.mes || "Sin mes"}`;
+      if (!map[k]) map[k] = [];
+      map[k].push(c);
+    });
+    grupos = Object.entries(map).sort((a, b) => a[0].localeCompare(b[0]));
+  }
+
+  function imprimirPDF() {
+    const style = `
+      <style>
+        body { font-family: Arial, sans-serif; font-size: 12px; color: #1a1a2e; margin: 20px; }
+        h2 { color: #5a4fa3; margin-bottom: 4px; }
+        .sub { color: #888; margin-bottom: 16px; font-size: 11px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th { background: #5a4fa3; color: white; padding: 7px 10px; text-align: left; font-size: 11px; text-transform: uppercase; }
+        td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; }
+        tr:nth-child(even) { background: #f5f4ff; }
+        .grupo-titulo { font-weight: bold; color: #5a4fa3; margin: 16px 0 4px; font-size: 13px; border-bottom: 2px solid #5a4fa3; padding-bottom: 4px; }
+        .total-row { background: #ece9ff !important; font-weight: bold; }
+        .totales { background: #5a4fa3; color: white; padding: 10px 14px; border-radius: 6px; margin-bottom: 16px; display: flex; gap: 24px; }
+        .totales span { font-size: 13px; }
+        @media print { body { margin: 10px; } }
+      </style>`;
+
+    const fecha = new Date().toLocaleDateString("es-AR");
+    let html = `${style}<h2>Reporte de Cobros</h2>
+      <div class="sub">Generado el ${fecha}${filtroInq ? ` · Inquilino: ${filtroInq}` : ""}${filtroDesde ? ` · Desde: ${filtroDesde}` : ""}${filtroHasta ? ` · Hasta: ${filtroHasta}` : ""}</div>
+      <div class="totales">
+        <span>Total ARS: <b>$${totalARS.toLocaleString("es-AR")}</b></span>
+        ${totalUSD > 0 ? `<span>Total USD: <b>U$S ${totalUSD.toLocaleString()}</b></span>` : ""}
+        <span>Registros: <b>${filtrados.length}</b></span>
+      </div>`;
+
+    const filasCobros = (lista) => lista.map(c => `
+      <tr>
+        <td>${c.fecha ? new Date(c.fecha).toLocaleDateString("es-AR") : "—"}</td>
+        <td>${c.inquilino || "—"}</td>
+        <td>${c.direccion || "—"}</td>
+        <td>${c.concepto || "—"}</td>
+        <td>${c.mes || ""} ${c.anio || ""}</td>
+        <td><b>${c.moneda === "ARS" ? "$" + Number(c.monto).toLocaleString("es-AR") : "U$S " + Number(c.monto).toLocaleString()}</b></td>
+        <td>${c.notas || "—"}</td>
+      </tr>`).join("");
+
+    const encabezado = `<tr><th>Fecha</th><th>Inquilino</th><th>Dirección</th><th>Concepto</th><th>Mes/Año</th><th>Monto</th><th>Notas</th></tr>`;
+
+    if (grupos) {
+      grupos.forEach(([grupo, lista]) => {
+        const subARS = lista.filter(c => c.moneda === "ARS").reduce((s, c) => s + (parseFloat(c.monto) || 0), 0);
+        const subUSD = lista.filter(c => c.moneda === "USD").reduce((s, c) => s + (parseFloat(c.monto) || 0), 0);
+        html += `<div class="grupo-titulo">${grupo}</div>
+          <table>${encabezado}${filasCobros(lista)}
+            <tr class="total-row">
+              <td colspan="5">Subtotal ${grupo}</td>
+              <td>$${subARS.toLocaleString("es-AR")}${subUSD > 0 ? ` / U$S ${subUSD.toLocaleString()}` : ""}</td>
+              <td>${lista.length} cobros</td>
+            </tr>
+          </table>`;
+      });
+    } else {
+      html += `<table>${encabezado}${filasCobros(filtrados)}</table>`;
+    }
+
+    const win = window.open("", "_blank");
+    win.document.write(`<html><head><title>Reporte de Cobros</title></head><body>${html}</body></html>`);
+    win.document.close();
+    win.focus();
+    setTimeout(() => win.print(), 500);
+  }
+
+  const S = {
+    inp: { padding: "7px 10px", border: "1px solid #5a4fa3", borderRadius: 6, fontSize: 13, background: "#1e1e2e", color: "#e0e0f0", outline: "none" },
+    th: { padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase", background: "#2d2b55", borderBottom: "2px solid #5a4fa3" },
+    td: { padding: "9px 14px", borderBottom: "1px solid #3d3b6e", color: "#e0e0f0" },
+    tdAlt: { padding: "9px 14px", borderBottom: "1px solid #3d3b6e", color: "#e0e0f0", background: "#252545" },
+  };
+
+  return (
+    <div>
+      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
+        <div style={{ fontSize: 20, fontWeight: 600, flex: 1, color: "#e0e0f0" }}>Registro de cobros</div>
+        <button onClick={imprimirPDF} style={{ padding: "7px 16px", background: "#7c6fcd", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600 }}>
+          Imprimir / PDF
+        </button>
+      </div>
+
+      {/* FILTROS */}
+      <div style={{ background: "#252538", border: "1px solid #5a4fa3", borderRadius: 10, padding: "14px 16px", marginBottom: 16, display: "flex", gap: 12, flexWrap: "wrap", alignItems: "flex-end" }}>
+        <div>
+          <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 4, fontWeight: 600 }}>INQUILINO</div>
+          <select value={filtroInq} onChange={e => setFiltroInq(e.target.value)} style={S.inp}>
+            <option value="">Todos</option>
+            {inquilinos.map(i => <option key={i} value={i}>{i}</option>)}
+          </select>
+        </div>
+        <div>
+          <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 4, fontWeight: 600 }}>DESDE</div>
+          <input type="date" value={filtroDesde} onChange={e => setFiltroDesde(e.target.value)} style={S.inp} />
+        </div>
+        <div>
+          <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 4, fontWeight: 600 }}>HASTA</div>
+          <input type="date" value={filtroHasta} onChange={e => setFiltroHasta(e.target.value)} style={S.inp} />
+        </div>
+        <div>
+          <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 4, fontWeight: 600 }}>AGRUPAR POR</div>
+          <select value={agrupar} onChange={e => setAgrupar(e.target.value)} style={S.inp}>
+            <option value="ninguno">Sin agrupar</option>
+            <option value="inquilino">Inquilino</option>
+            <option value="mes">Mes</option>
+          </select>
+        </div>
+        <button onClick={() => { setFiltroInq(""); setFiltroDesde(""); setFiltroHasta(""); setAgrupar("ninguno"); }}
+          style={{ padding: "7px 12px", background: "none", border: "1px solid #5a4fa3", borderRadius: 6, color: "#cba6f7", cursor: "pointer", fontSize: 12 }}>
+          Limpiar
+        </button>
+      </div>
+
+      {/* TOTALES */}
+      <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <div style={{ background: "#2d2b55", border: "1px solid #5a4fa3", borderRadius: 8, padding: "10px 18px" }}>
+          <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 2 }}>TOTAL ARS</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#a6e3a1" }}>${totalARS.toLocaleString("es-AR")}</div>
+        </div>
+        {totalUSD > 0 && (
+          <div style={{ background: "#2d2b55", border: "1px solid #5a4fa3", borderRadius: 8, padding: "10px 18px" }}>
+            <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 2 }}>TOTAL USD</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#89b4fa" }}>U$S {totalUSD.toLocaleString()}</div>
+          </div>
+        )}
+        <div style={{ background: "#2d2b55", border: "1px solid #5a4fa3", borderRadius: 8, padding: "10px 18px" }}>
+          <div style={{ fontSize: 11, color: "#cba6f7", marginBottom: 2 }}>REGISTROS</div>
+          <div style={{ fontSize: 20, fontWeight: 700, color: "#e0e0f0" }}>{filtrados.length}</div>
+        </div>
+      </div>
+
+      {cobros.length === 0 ? (
+        <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", padding: 48, textAlign: "center", color: "#c0c0e0" }}>
+          <div style={{ fontSize: 15, marginBottom: 8, color: "#d0d0f0" }}>Sin cobros registrados</div>
+          <div style={{ fontSize: 13 }}>Desde Propiedades, hacé clic en "+ Cobro" en cualquier unidad alquilada.</div>
+        </div>
+      ) : grupos ? (
+        grupos.map(([grupo, lista]) => {
+          const subARS = lista.filter(c => c.moneda === "ARS").reduce((s, c) => s + (parseFloat(c.monto) || 0), 0);
+          const subUSD = lista.filter(c => c.moneda === "USD").reduce((s, c) => s + (parseFloat(c.monto) || 0), 0);
+          return (
+            <div key={grupo} style={{ marginBottom: 24 }}>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#cba6f7", marginBottom: 8, borderBottom: "2px solid #5a4fa3", paddingBottom: 6 }}>
+                {grupo}
+                <span style={{ fontSize: 12, fontWeight: 400, color: "#c0c0e0", marginLeft: 12 }}>
+                  {lista.length} cobros · ${subARS.toLocaleString("es-AR")} ARS{subUSD > 0 ? ` · U$S ${subUSD.toLocaleString()}` : ""}
+                </span>
+              </div>
+              <div style={{ background: "#252538", borderRadius: 8, border: "1px solid #3d3b6e", overflow: "hidden" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                  <thead><tr>{["Fecha","Inquilino","Dirección","Concepto","Mes/Año","Monto","Notas"].map(h => <th key={h} style={S.th}>{h}</th>)}</tr></thead>
+                  <tbody>
+                    {lista.map((c, i) => (
+                      <tr key={c.id}>
+                        <td style={i%2===0?S.td:S.tdAlt}>{c.fecha ? new Date(c.fecha).toLocaleDateString("es-AR") : "—"}</td>
+                        <td style={i%2===0?S.td:S.tdAlt}>{c.inquilino || "—"}</td>
+                        <td style={{...(i%2===0?S.td:S.tdAlt), maxWidth:180, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.direccion}</td>
+                        <td style={i%2===0?S.td:S.tdAlt}><span style={{background:"#3d3b6e",color:"#cba6f7",borderRadius:4,padding:"1px 7px",fontSize:11}}>{c.concepto}</span></td>
+                        <td style={i%2===0?S.td:S.tdAlt}>{c.mes} {c.anio}</td>
+                        <td style={{...(i%2===0?S.td:S.tdAlt), fontWeight:600, color:"#a6e3a1"}}>{c.moneda==="ARS"?fmtARS(c.monto):`U$S ${Number(c.monto).toLocaleString()}`}</td>
+                        <td style={{...(i%2===0?S.td:S.tdAlt), color:"#a0a0c0"}}>{c.notas||"—"}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "hidden" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+            <thead><tr>{["Fecha","Inquilino","Dirección","Concepto","Mes/Año","Monto","Notas"].map(h => <th key={h} style={S.th}>{h}</th>)}</tr></thead>
+            <tbody>
+              {filtrados.map((c, i) => (
+                <tr key={c.id}>
+                  <td style={i%2===0?S.td:S.tdAlt}>{c.fecha ? new Date(c.fecha).toLocaleDateString("es-AR") : "—"}</td>
+                  <td style={i%2===0?S.td:S.tdAlt}>{c.inquilino || "—"}</td>
+                  <td style={{...(i%2===0?S.td:S.tdAlt), maxWidth:180, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap"}}>{c.direccion}</td>
+                  <td style={i%2===0?S.td:S.tdAlt}><span style={{background:"#3d3b6e",color:"#cba6f7",borderRadius:4,padding:"1px 7px",fontSize:11}}>{c.concepto}</span></td>
+                  <td style={i%2===0?S.td:S.tdAlt}>{c.mes} {c.anio}</td>
+                  <td style={{...(i%2===0?S.td:S.tdAlt), fontWeight:600, color:"#a6e3a1"}}>{c.moneda==="ARS"?fmtARS(c.monto):`U$S ${Number(c.monto).toLocaleString()}`}</td>
+                  <td style={{...(i%2===0?S.td:S.tdAlt), color:"#a0a0c0"}}>{c.notas||"—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }
@@ -485,7 +714,7 @@ function PlanillaTab({ props, onUpdateCell }) {
         <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Planilla completa</div>
         <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 220 }} />
       </div>
-      <div style={{ fontSize: 12, color: "#a0a0c0", marginBottom: 10 }}>
+      <div style={{ fontSize: 12, color: "#c0c0e0", marginBottom: 10 }}>
         Hacé clic en cualquier celda para editarla. Los cambios se guardan automáticamente al salir del campo (Enter o clic afuera).
       </div>
       <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%" }}>
@@ -493,7 +722,7 @@ function PlanillaTab({ props, onUpdateCell }) {
           <thead>
             <tr style={{ background: "#1e1e2e" }}>
               {COLUMNAS_PLANILLA.map((c) => (
-                <th key={c.key} style={{ position: "sticky", top: 0, background: "#1e1e2e", padding: "8px 6px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 10.5, textTransform: "uppercase", borderBottom: "1px solid #eee", borderRight: "1px solid #f0f0f0", width: c.w, minWidth: c.w }}>
+                <th key={c.key} style={{ position: "sticky", top: 0, background: "#1e1e2e", padding: "8px 6px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 10.5, textTransform: "uppercase", borderBottom: "1px solid #eee", borderRight: "1px solid #f0f0f0", width: c.w, minWidth: c.w }}>
                   {c.label}
                 </th>
               ))}
@@ -521,7 +750,7 @@ function PlanillaTab({ props, onUpdateCell }) {
           </tbody>
         </table>
       </div>
-      <div style={{ marginTop: 8, fontSize: 12, color: "#7070a0" }}>{filtradas.length} de {props.length} propiedades · {COLUMNAS_PLANILLA.length} columnas</div>
+      <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>{filtradas.length} de {props.length} propiedades · {COLUMNAS_PLANILLA.length} columnas</div>
     </div>
   );
 }
@@ -693,7 +922,7 @@ export default function App() {
 
   if (cargando) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif", color: "#a0a0c0" }}>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif", color: "#c0c0e0" }}>
         Cargando portfolio...
       </div>
     );
@@ -748,7 +977,7 @@ export default function App() {
                   <div key={p.id} onClick={() => setPropSel(p)}
                     style={{ background: "#252538", border: `1px solid ${c.bg}`, borderLeft: `4px solid ${c.color}`, borderRadius: 8, padding: "12px 14px", cursor: "pointer" }}>
                     <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 4 }}>{p.direccion}</div>
-                    <div style={{ fontSize: 12, color: "#b0b0d0", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"}</div>
+                    <div style={{ fontSize: 12, color: "#d0d0f0", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"}</div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <Badge tipo={sem} />
                       {dias !== null && <span style={{ fontSize: 11, color: c.color, fontWeight: 500 }}>{dias < 0 ? `−${Math.abs(dias)}d` : `+${dias}d`}</span>}
@@ -784,12 +1013,12 @@ export default function App() {
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
                   <tr style={{ background: "#1e1e2e", borderBottom: "1px solid #eee" }}>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Dirección</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Inquilino</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Titular</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Alquiler</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Vencimiento</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Estado</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Dirección</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Inquilino</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Titular</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Alquiler</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Vencimiento</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Estado</th>
                     <th style={{ padding: "10px 14px" }}></th>
                   </tr>
                 </thead>
@@ -801,7 +1030,7 @@ export default function App() {
                       <tr key={p.id} style={{ borderBottom: "0.5px solid #f0f0f0", background: i % 2 === 0 ? "#fff" : "#fafaf9" }}>
                         <td style={{ padding: "10px 14px" }}>
                           <div style={{ fontWeight: 500 }}>{p.direccion}</div>
-                          <div style={{ fontSize: 11, color: "#7070a0" }}>{p.mts2 ? `${p.mts2} m² · ${p.ambientes} amb.` : ""}</div>
+                          <div style={{ fontSize: 11, color: "#c0c0e0" }}>{p.mts2 ? `${p.mts2} m² · ${p.ambientes} amb.` : ""}</div>
                         </td>
                         <td style={{ padding: "10px 14px", color: p.inquilino ? "#e0e0f0" : "#ccc" }}>{p.inquilino || "—"}</td>
                         <td style={{ padding: "10px 14px" }}><span style={{ background: "#2d2b55", color: "#7c6fcd", borderRadius: 4, padding: "1px 6px", fontSize: 11, fontWeight: 600, color: "#cba6f7" }}>{p.titular}</span></td>
@@ -821,9 +1050,9 @@ export default function App() {
                   })}
                 </tbody>
               </table>
-              {propsFiltradas.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "#7070a0" }}>Sin resultados</div>}
+              {propsFiltradas.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "#c0c0e0" }}>Sin resultados</div>}
             </div>
-            <div style={{ marginTop: 8, fontSize: 12, color: "#7070a0" }}>{propsFiltradas.length} de {props.length} propiedades</div>
+            <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>{propsFiltradas.length} de {props.length} propiedades</div>
           </div>
         )}
 
@@ -832,46 +1061,7 @@ export default function App() {
         )}
 
         {tab === "cobros" && (
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-              <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Registro de cobros</div>
-              <input value={filtroCobros} onChange={(e) => setFiltroCobros(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 200 }} />
-            </div>
-            {cobros.length === 0 ? (
-              <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", padding: 48, textAlign: "center", color: "#7070a0" }}>
-                <div style={{ fontSize: 15, marginBottom: 8, color: "#b0b0d0" }}>Sin cobros registrados</div>
-                <div style={{ fontSize: 13 }}>Desde Propiedades, hacé clic en "+ Cobro" en cualquier unidad alquilada.</div>
-              </div>
-            ) : (
-              <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "hidden" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                  <thead>
-                    <tr style={{ background: "#1e1e2e", borderBottom: "1px solid #eee" }}>
-                      {["Fecha", "Dirección", "Inquilino", "Concepto", "Mes/Año", "Monto", "Notas"].map((h) => (
-                        <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cobros.filter((c) => {
-                      const txt = (c.direccion + c.inquilino + c.concepto + c.mes).toLowerCase();
-                      return !filtroCobros || txt.includes(filtroCobros.toLowerCase());
-                    }).map((c, i) => (
-                      <tr key={c.id} style={{ borderBottom: "0.5px solid #f0f0f0", background: i % 2 === 0 ? "#fff" : "#fafaf9" }}>
-                        <td style={{ padding: "10px 14px" }}>{new Date(c.fecha).toLocaleDateString("es-AR")}</td>
-                        <td style={{ padding: "10px 14px", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.direccion}</td>
-                        <td style={{ padding: "10px 14px" }}>{c.inquilino || "—"}</td>
-                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#2d2b55", color: "#7c6fcd", borderRadius: 4, padding: "1px 6px", fontSize: 11 }}>{c.concepto}</span></td>
-                        <td style={{ padding: "10px 14px" }}>{c.mes} {c.anio}</td>
-                        <td style={{ padding: "10px 14px", fontWeight: 500 }}>{c.moneda === "ARS" ? fmtARS(c.monto) : `U$S ${Number(c.monto).toLocaleString()}`}</td>
-                        <td style={{ padding: "10px 14px", color: "#a0a0c0" }}>{c.notas || "—"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
+          <CobroTab cobros={cobros} />
         )}
 
         {tab === "alertas" && (
@@ -888,16 +1078,16 @@ export default function App() {
               return (
                 <div key={grupo.tipo} style={{ marginBottom: 24 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{grupo.label} ({lista.length})</div>
-                  <div style={{ fontSize: 12, color: "#a0a0c0", marginBottom: 10 }}>{grupo.desc}</div>
+                  <div style={{ fontSize: 12, color: "#c0c0e0", marginBottom: 10 }}>{grupo.desc}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 8 }}>
                     {lista.map((p) => {
                       const dias = diasParaVencer(p.periodo);
                       return (
                         <div key={p.id} onClick={() => setPropSel(p)} style={{ background: "#252538", border: "1px solid #3d3b6e", borderRadius: 8, padding: "12px 14px", cursor: "pointer" }}>
                           <div style={{ fontWeight: 500, fontSize: 13, marginBottom: 3 }}>{p.direccion}</div>
-                          <div style={{ fontSize: 12, color: "#b0b0d0", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"} {p.telefono ? `· ${p.telefono}` : ""}</div>
+                          <div style={{ fontSize: 12, color: "#d0d0f0", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"} {p.telefono ? `· ${p.telefono}` : ""}</div>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <span style={{ fontSize: 11, color: "#a0a0c0" }}>{p.periodo || "Sin período"}</span>
+                            <span style={{ fontSize: 11, color: "#c0c0e0" }}>{p.periodo || "Sin período"}</span>
                             {dias !== null && <Badge tipo={semaforo(p)} />}
                           </div>
                           {p.mail && <div style={{ fontSize: 11, color: "#89b4fa", marginTop: 4 }}>{p.mail}</div>}
@@ -911,7 +1101,7 @@ export default function App() {
             {stats.vencidos + stats.proximos + stats.libres === 0 && (
               <div style={{ background: "#2d2b55", borderRadius: 10, padding: 40, textAlign: "center", color: "#7c6fcd" }}>
                 <div style={{ fontSize: 15, fontWeight: 600 }}>Todo en orden</div>
-                <div style={{ fontSize: 13, color: "#b0b0d0", marginTop: 4 }}>No hay contratos vencidos ni propiedades sin gestionar.</div>
+                <div style={{ fontSize: 13, color: "#d0d0f0", marginTop: 4 }}>No hay contratos vencidos ni propiedades sin gestionar.</div>
               </div>
             )}
           </div>
