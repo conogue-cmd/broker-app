@@ -674,8 +674,9 @@ const COLUMNAS_PLANILLA = [
 
 function PlanillaTab({ props, onUpdateCell }) {
   const [busqueda, setBusqueda] = useState("");
-  const [celda, setCelda] = useState({ fila: 0, col: 0 }); // celda activa
-  const [editando, setEditando] = useState(false);
+  const [celda, setCelda] = useState({ fila: 0, col: 0 });
+  const [modoEdicion, setModoEdicion] = useState(false); // SIEMPRE arranca en solo lectura
+  const [editandoCelda, setEditandoCelda] = useState(false);
   const [valEdit, setValEdit] = useState("");
   const tableRef = useRef(null);
 
@@ -689,6 +690,7 @@ function PlanillaTab({ props, onUpdateCell }) {
   const nFilas = filtradas.length;
 
   function mover(df, dc) {
+    setEditandoCelda(false);
     setCelda(prev => ({
       fila: Math.max(0, Math.min(nFilas - 1, prev.fila + df)),
       col: Math.max(0, Math.min(nCols - 1, prev.col + dc)),
@@ -696,27 +698,26 @@ function PlanillaTab({ props, onUpdateCell }) {
   }
 
   function iniciarEdicion(fila, col) {
-    const p = filtradas[fila];
+    if (!modoEdicion) return; // bloqueado en modo lectura
     const key = COLS[col].key;
-    if (key === "estado") return; // estado se edita con select directo
-    setValEdit(p[key] || "");
-    setEditando(true);
+    if (key === "estado") return;
+    setValEdit(filtradas[fila][key] || "");
+    setEditandoCelda(true);
   }
 
   function confirmarEdicion() {
-    if (!editando) return;
+    if (!editandoCelda) return;
     const p = filtradas[celda.fila];
     const key = COLS[celda.col].key;
-    const valorActual = p[key] || "";
-    if (valEdit !== valorActual) onUpdateCell(p.id, key, valEdit);
-    setEditando(false);
+    if (valEdit !== (p[key] || "")) onUpdateCell(p.id, key, valEdit);
+    setEditandoCelda(false);
   }
 
   function handleKeyDown(e) {
-    if (editando) {
-      if (e.key === "Escape") { setEditando(false); e.preventDefault(); }
+    if (editandoCelda) {
+      if (e.key === "Escape") { setEditandoCelda(false); e.preventDefault(); tableRef.current?.focus(); }
       if (e.key === "Enter") { confirmarEdicion(); e.preventDefault(); }
-      if (e.key === "Tab") { confirmarEdicion(); mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); }
+      if (e.key === "Tab") { confirmarEdicion(); mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); tableRef.current?.focus(); }
       return;
     }
     switch (e.key) {
@@ -725,40 +726,58 @@ function PlanillaTab({ props, onUpdateCell }) {
       case "ArrowLeft":  mover(0, -1); e.preventDefault(); break;
       case "ArrowRight": mover(0, 1);  e.preventDefault(); break;
       case "Tab":        mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); break;
-      case "Enter":      iniciarEdicion(celda.fila, celda.col); e.preventDefault(); break;
-      case "F2":         iniciarEdicion(celda.fila, celda.col); e.preventDefault(); break;
+      case "Enter":      if (modoEdicion) { iniciarEdicion(celda.fila, celda.col); e.preventDefault(); } break;
+      case "F2":         if (modoEdicion) { iniciarEdicion(celda.fila, celda.col); e.preventDefault(); } break;
       default:
-        // Empezar a escribir directamente activa la edición
-        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+        // Solo activa edición si el modo edición está habilitado
+        if (modoEdicion && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
           setValEdit(e.key);
-          setEditando(true);
+          setEditandoCelda(true);
           e.preventDefault();
         }
     }
   }
 
-  // Scroll automático a la celda activa
   useEffect(() => {
     if (!tableRef.current) return;
     const td = tableRef.current.querySelector(`[data-celda="${celda.fila}-${celda.col}"]`);
     if (td) td.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [celda]);
 
+  // Al desactivar edición, cancela cualquier edición en curso
+  function toggleEdicion() {
+    if (modoEdicion) { setEditandoCelda(false); }
+    setModoEdicion(v => !v);
+    tableRef.current?.focus();
+  }
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
         <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Planilla completa</div>
-        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 220, background: "#1e1e2e", color: "#e0e0f0" }} />
+        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #5a4fa3", borderRadius: 6, fontSize: 13, width: 220, background: "#2d2b55", color: "#e0e0f0" }} />
+        <button onClick={toggleEdicion} style={{
+          padding: "7px 16px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600, border: "none",
+          background: modoEdicion ? "#f38ba8" : "#7c6fcd",
+          color: "#fff",
+          transition: "background 0.2s",
+        }}>
+          {modoEdicion ? "🔓 Edición activa — clic para bloquear" : "🔒 Solo lectura — clic para editar"}
+        </button>
       </div>
+
       <div style={{ fontSize: 12, color: "#c0c0e0", marginBottom: 10 }}>
-        Usá las <b style={{color:"#cba6f7"}}>flechas del teclado</b> para moverte · <b style={{color:"#cba6f7"}}>Enter o F2</b> para editar · <b style={{color:"#cba6f7"}}>Escape</b> para cancelar · También podés hacer clic en cualquier celda
+        {modoEdicion
+          ? <span style={{color:"#f38ba8", fontWeight:600}}>⚠️ Modo edición activo. Enter o doble clic para modificar una celda. Escape para cancelar.</span>
+          : <span>Usá las <b style={{color:"#cba6f7"}}>flechas del teclado</b> para navegar · Hacé clic en una celda para seleccionarla · Activá "Edición" para modificar datos</span>
+        }
       </div>
+
       <div
         ref={tableRef}
         tabIndex={0}
         onKeyDown={handleKeyDown}
-        onFocus={() => {}}
-        style={{ background: "#fff", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%", maxHeight: "70vh", outline: "none" }}
+        style={{ background: "#fff", borderRadius: 10, border: `2px solid ${modoEdicion ? "#f38ba8" : "#3d3b6e"}`, overflow: "auto", maxWidth: "100%", maxHeight: "70vh", outline: "none", transition: "border-color 0.2s" }}
       >
         <table style={{ borderCollapse: "collapse", fontSize: 12, tableLayout: "fixed" }}>
           <thead>
@@ -775,7 +794,7 @@ function PlanillaTab({ props, onUpdateCell }) {
               <tr key={p.id} style={{ background: fi % 2 === 0 ? "#fff" : "#f5f4ff" }}>
                 {COLS.map((c, ci) => {
                   const activa = celda.fila === fi && celda.col === ci;
-                  const estaEditando = activa && editando;
+                  const estaEditando = activa && editandoCelda && modoEdicion;
                   return (
                     <td
                       key={c.key}
@@ -786,13 +805,13 @@ function PlanillaTab({ props, onUpdateCell }) {
                         borderRight: "1px solid #e0e0e0",
                         borderBottom: "1px solid #e8e8f0",
                         padding: 0,
-                        outline: activa ? "2px solid #7c6fcd" : "none",
+                        outline: activa ? `2px solid ${modoEdicion ? "#f38ba8" : "#7c6fcd"}` : "none",
                         outlineOffset: "-2px",
-                        background: activa ? (estaEditando ? "#000" : "#ede9ff") : "transparent",
-                        position: "relative",
+                        background: activa ? (estaEditando ? "#000" : modoEdicion ? "#fff0f3" : "#ede9ff") : "transparent",
+                        cursor: modoEdicion ? "text" : "default",
                       }}
                     >
-                      {c.key === "estado" ? (
+                      {c.key === "estado" && modoEdicion ? (
                         <select
                           value={p.estado}
                           onChange={(e) => onUpdateCell(p.id, "estado", e.target.value)}
@@ -809,15 +828,15 @@ function PlanillaTab({ props, onUpdateCell }) {
                           onChange={(e) => setValEdit(e.target.value)}
                           onBlur={confirmarEdicion}
                           onKeyDown={(e) => {
-                            if (e.key === "Enter") { confirmarEdicion(); e.preventDefault(); }
-                            if (e.key === "Escape") { setEditando(false); e.preventDefault(); tableRef.current?.focus(); }
+                            if (e.key === "Enter") { confirmarEdicion(); e.preventDefault(); tableRef.current?.focus(); }
+                            if (e.key === "Escape") { setEditandoCelda(false); e.preventDefault(); tableRef.current?.focus(); }
                             if (e.key === "Tab") { confirmarEdicion(); mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); tableRef.current?.focus(); }
                             e.stopPropagation();
                           }}
                           style={{ width: "100%", border: "none", padding: "4px 6px", fontSize: 12, fontFamily: "inherit", background: "#000", color: "#fff", outline: "none" }}
                         />
                       ) : (
-                        <div style={{ padding: "5px 6px", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#111" }}>
+                        <div style={{ padding: "5px 6px", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#111", userSelect: "none" }}>
                           {p[c.key] || <span style={{ color: "#ccc" }}>—</span>}
                         </div>
                       )}
@@ -829,7 +848,10 @@ function PlanillaTab({ props, onUpdateCell }) {
           </tbody>
         </table>
       </div>
-      <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>{filtradas.length} de {props.length} propiedades · {COLS.length} columnas · Celda: fila {celda.fila + 1}, col {celda.col + 1}</div>
+      <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>
+        {filtradas.length} de {props.length} propiedades · {COLS.length} columnas · Celda: fila {celda.fila + 1}, col {celda.col + 1}
+        {modoEdicion && <span style={{color:"#f38ba8", marginLeft:12}}>· Modo edición activo</span>}
+      </div>
     </div>
   );
 }
