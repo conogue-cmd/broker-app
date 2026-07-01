@@ -689,14 +689,14 @@ function PlanillaCelda({ valor, onCommit }) {
           if (e.key === "Enter") e.target.blur();
           if (e.key === "Escape") { setVal(valor || ""); setEditando(false); }
         }}
-        style={{ width: "100%", border: "1.5px solid #7c6fcd", borderRadius: 3, padding: "3px 5px", fontSize: 12, fontFamily: "inherit" }}
+        style={{ width: "100%", border: "none", padding: "4px 6px", fontSize: 12, fontFamily: "inherit", background: "#000", color: "#fff", outline: "none" }}
       />
     );
   }
   return (
     <div onClick={() => setEditando(true)} title="Clic para editar"
-      style={{ padding: "5px 6px", cursor: "text", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-      {valor || <span style={{ color: "#4a4a6a" }}>—</span>}
+      style={{ padding: "5px 6px", cursor: "text", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#111", background: "transparent" }}>
+      {valor || <span style={{ color: "#ccc" }}>—</span>}
     </div>
   );
 }
@@ -717,12 +717,12 @@ function PlanillaTab({ props, onUpdateCell }) {
       <div style={{ fontSize: 12, color: "#c0c0e0", marginBottom: 10 }}>
         Hacé clic en cualquier celda para editarla. Los cambios se guardan automáticamente al salir del campo (Enter o clic afuera).
       </div>
-      <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%" }}>
+      <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%" }}>
         <table style={{ borderCollapse: "collapse", fontSize: 12, tableLayout: "fixed" }}>
           <thead>
-            <tr style={{ background: "#1e1e2e" }}>
+            <tr style={{ background: "#2d2b55" }}>
               {COLUMNAS_PLANILLA.map((c) => (
-                <th key={c.key} style={{ position: "sticky", top: 0, background: "#1e1e2e", padding: "8px 6px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 10.5, textTransform: "uppercase", borderBottom: "1px solid #eee", borderRight: "1px solid #f0f0f0", width: c.w, minWidth: c.w }}>
+                <th key={c.key} style={{ position: "sticky", top: 0, background: "#2d2b55", padding: "8px 6px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 10.5, textTransform: "uppercase", borderBottom: "2px solid #5a4fa3", borderRight: "1px solid #3d3b6e", width: c.w, minWidth: c.w }}>
                   {c.label}
                 </th>
               ))}
@@ -730,12 +730,12 @@ function PlanillaTab({ props, onUpdateCell }) {
           </thead>
           <tbody>
             {filtradas.map((p, i) => (
-              <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#fafaf9" }}>
+              <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#f5f4ff" }}>
                 {COLUMNAS_PLANILLA.map((c) => (
-                  <td key={c.key} style={{ borderRight: "1px solid #f0f0f0", borderBottom: "1px solid #f5f5f3", padding: 0 }}>
+                  <td key={c.key} style={{ borderRight: "1px solid #e0e0e0", borderBottom: "1px solid #e8e8f0", padding: 0 }}>
                     {c.key === "estado" ? (
                       <select value={p.estado} onChange={(e) => onUpdateCell(p.id, "estado", e.target.value)}
-                        style={{ width: "100%", border: "none", background: "transparent", fontSize: 12, padding: "5px 4px", fontFamily: "inherit" }}>
+                        style={{ width: "100%", border: "none", background: "transparent", fontSize: 12, padding: "5px 4px", fontFamily: "inherit", color: "#111", cursor: "pointer" }}>
                         <option value="alquilado">Alquilado</option>
                         <option value="libre">Libre</option>
                         <option value="vendido">Vendido</option>
