@@ -100,12 +100,12 @@ function fmtFecha(d) {
 }
 
 const COLORES_SEMAFORO = {
-  vigente: { bg: "#eaf3de", color: "#3B6D11", label: "Vigente" },
-  proximo: { bg: "#faeeda", color: "#854F0B", label: "Próximo a vencer" },
-  vencido: { bg: "#fcebeb", color: "#A32D2D", label: "Vencido" },
-  libre: { bg: "#e6f1fb", color: "#185FA5", label: "Libre / Sin inquilino" },
-  vendido: { bg: "#f1efe8", color: "#5F5E5A", label: "Vendido" },
-  "sin-fecha": { bg: "#fbeaf0", color: "#993556", label: "Sin fecha" },
+  vigente: { bg: "#eaf3de", color: "#a6e3a1", label: "Vigente" },
+  proximo: { bg: "#faeeda", color: "#fab387", label: "Próximo a vencer" },
+  vencido: { bg: "#fcebeb", color: "#f38ba8", label: "Vencido" },
+  libre: { bg: "#e6f1fb", color: "#89b4fa", label: "Libre / Sin inquilino" },
+  vendido: { bg: "#f1efe8", color: "#a0a0c0", label: "Vendido" },
+  "sin-fecha": { bg: "#fbeaf0", color: "#cba6f7", label: "Sin fecha" },
 };
 
 // ─── COMPONENTES VISUALES ──────────────────────────────────────────────────
@@ -120,10 +120,10 @@ function Badge({ tipo }) {
 
 function KPI({ label, value, sub, color }) {
   return (
-    <div style={{ background: "#f8f8f6", borderRadius: 8, padding: "14px 18px", minWidth: 110 }}>
-      <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>{label}</div>
-      <div style={{ fontSize: 24, fontWeight: 600, color: color || "#1a1a18" }}>{value}</div>
-      {sub && <div style={{ fontSize: 11, color: "#aaa", marginTop: 2 }}>{sub}</div>}
+    <div style={{ background: "#252538", borderRadius: 8, padding: "14px 18px", minWidth: 110 }}>
+      <div style={{ fontSize: 12, color: "#a0a0c0", marginBottom: 4 }}>{label}</div>
+      <div style={{ fontSize: 24, fontWeight: 600, color: color || "#e0e0f0" }}>{value}</div>
+      {sub && <div style={{ fontSize: 11, color: "#7070a0", marginTop: 2 }}>{sub}</div>}
     </div>
   );
 }
@@ -136,17 +136,17 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
 
   const campo = (label, key, tipo = "text") => (
     <div style={{ marginBottom: 10 }}>
-      <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 11, color: "#a0a0c0", marginBottom: 2 }}>{label}</div>
       {editando ? (
         <input
           type={tipo}
           value={form[key] || ""}
           onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-          style={{ width: "100%", padding: "6px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, background: "#fff" }}
+          style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, background: "#252538" }}
         />
       ) : (
-        <div style={{ fontSize: 13, color: "#1a1a18", padding: "4px 0", borderBottom: "0.5px solid #eee" }}>
-          {prop[key] || <span style={{ color: "#ccc" }}>—</span>}
+        <div style={{ fontSize: 13, color: "#e0e0f0", padding: "4px 0", borderBottom: "0.5px solid #eee" }}>
+          {prop[key] || <span style={{ color: "#4a4a6a" }}>—</span>}
         </div>
       )}
     </div>
@@ -157,45 +157,45 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
 
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "min(700px, 96vw)", maxHeight: "90vh", overflow: "auto", padding: 28, boxShadow: "0 8px 40px rgba(0,0,0,0.18)" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#252538", borderRadius: 16, width: "min(700px, 96vw)", maxHeight: "90vh", overflow: "auto", padding: 28, boxShadow: "0 8px 40px rgba(0,0,0,0.18)" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
-            <div style={{ fontSize: 18, fontWeight: 600, color: "#1a1a18", marginBottom: 6 }}>{prop.direccion}</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: "#e0e0f0", marginBottom: 6 }}>{prop.direccion}</div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
               <Badge tipo={sem} />
               {dias !== null && sem !== "vendido" && (
-                <span style={{ fontSize: 11, color: "#888", padding: "2px 8px", background: "#f5f5f3", borderRadius: 4 }}>
+                <span style={{ fontSize: 11, color: "#a0a0c0", padding: "2px 8px", background: "#2d2b55", borderRadius: 4 }}>
                   {dias < 0 ? `Venció hace ${Math.abs(dias)} días` : `Vence en ${dias} días`}
                 </span>
               )}
-              <span style={{ fontSize: 11, color: "#888", padding: "2px 8px", background: "#f5f5f3", borderRadius: 4 }}>Titular: {prop.titular}</span>
+              <span style={{ fontSize: 11, color: "#a0a0c0", padding: "2px 8px", background: "#2d2b55", borderRadius: 4 }}>Titular: {prop.titular}</span>
             </div>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             {editando ? (
               <>
-                <button onClick={() => { onSave(form); setEditando(false); }} style={{ padding: "6px 14px", background: "#1B6B3A", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Guardar</button>
-                <button onClick={() => { setForm({ ...prop }); setEditando(false); }} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Cancelar</button>
+                <button onClick={() => { onSave(form); setEditando(false); }} style={{ padding: "6px 14px", background: "#7c6fcd", color: "#e0e0f0", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Guardar</button>
+                <button onClick={() => { setForm({ ...prop }); setEditando(false); }} style={{ padding: "6px 14px", background: "#2d2b55", border: "1px solid #3d3b6e", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Cancelar</button>
               </>
             ) : confirmandoBorrado ? (
               <>
-                <span style={{ fontSize: 12, color: "#A32D2D", alignSelf: "center", marginRight: 4 }}>¿Eliminar definitivamente?</span>
-                <button onClick={() => onDelete(prop.id)} style={{ padding: "6px 14px", background: "#A32D2D", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Sí, eliminar</button>
-                <button onClick={() => setConfirmandoBorrado(false)} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Cancelar</button>
+                <span style={{ fontSize: 12, color: "#f38ba8", alignSelf: "center", marginRight: 4 }}>¿Eliminar definitivamente?</span>
+                <button onClick={() => onDelete(prop.id)} style={{ padding: "6px 14px", background: "#f38ba8", color: "#e0e0f0", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Sí, eliminar</button>
+                <button onClick={() => setConfirmandoBorrado(false)} style={{ padding: "6px 14px", background: "#2d2b55", border: "1px solid #3d3b6e", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Cancelar</button>
               </>
             ) : (
               <>
-                <button onClick={() => setEditando(true)} style={{ padding: "6px 14px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Editar</button>
-                <button onClick={() => setConfirmandoBorrado(true)} style={{ padding: "6px 14px", background: "#fcebeb", color: "#A32D2D", border: "1px solid #f0c9c9", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Eliminar</button>
+                <button onClick={() => setEditando(true)} style={{ padding: "6px 14px", background: "#2d2b55", border: "1px solid #3d3b6e", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Editar</button>
+                <button onClick={() => setConfirmandoBorrado(true)} style={{ padding: "6px 14px", background: "#3a1e1e", color: "#f38ba8", border: "1px solid #f0c9c9", borderRadius: 6, cursor: "pointer", fontSize: 13 }}>Eliminar</button>
               </>
             )}
-            <button onClick={onClose} style={{ padding: "6px 10px", background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#888" }}>×</button>
+            <button onClick={onClose} style={{ padding: "6px 10px", background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "#a0a0c0" }}>×</button>
           </div>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 24px" }}>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Contrato</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#a0a0c0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Contrato</div>
             {campo("Inquilino", "inquilino")}
             {campo("DNI / CUIT", "dni")}
             {campo("Período", "periodo")}
@@ -206,7 +206,7 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
             {campo("Depósito", "deposito")}
           </div>
           <div>
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Propiedad</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#a0a0c0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 4 }}>Propiedad</div>
             {campo("M²", "mts2")}
             {campo("Ambientes", "ambientes")}
             {campo("Cochera", "cochera")}
@@ -216,7 +216,7 @@ function ModalDetalle({ prop, onClose, onSave, onDelete }) {
             {campo("Expensas", "expensas")}
             {campo("Valor compra U$S", "valor_compra")}
             {campo("Valor mercado", "valor_mercado")}
-            <div style={{ fontSize: 12, fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 16 }}>Administración</div>
+            <div style={{ fontSize: 12, fontWeight: 600, color: "#a0a0c0", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: 10, marginTop: 16 }}>Administración</div>
             {campo("Fecha de pago", "fecha_pago")}
             {campo("Impuesto inmobiliario", "impuesto")}
             {campo("N° partida / ABL", "nro_partida")}
@@ -289,62 +289,62 @@ function ModalCobro({ prop, onClose, onGuardar }) {
 
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "min(480px, 96vw)", padding: 28, maxHeight: "92vh", overflow: "auto" }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#252538", borderRadius: 16, width: "min(480px, 96vw)", padding: 28, maxHeight: "92vh", overflow: "auto" }}>
         <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 4 }}>Registrar cobro</div>
-        <div style={{ fontSize: 13, color: "#888", marginBottom: 16 }}>{prop?.direccion}</div>
+        <div style={{ fontSize: 13, color: "#a0a0c0", marginBottom: 16 }}>{prop?.direccion}</div>
 
-        <label style={{ display: "block", border: "1.5px dashed #c8e0d0", borderRadius: 10, padding: "14px 12px", textAlign: "center", cursor: "pointer", background: "#f7fbf8", marginBottom: 16 }}>
+        <label style={{ display: "block", border: "1.5px dashed #c8e0d0", borderRadius: 10, padding: "14px 12px", textAlign: "center", cursor: "pointer", background: "#252538", marginBottom: 16 }}>
           <input type="file" accept="image/*" onChange={handleFoto} style={{ display: "none" }} />
           {analizando ? (
-            <span style={{ fontSize: 13, color: "#1B6B3A", fontWeight: 500 }}>Leyendo comprobante...</span>
+            <span style={{ fontSize: 13, color: "#7c6fcd", fontWeight: 500 }}>Leyendo comprobante...</span>
           ) : fotoNombre ? (
-            <span style={{ fontSize: 13, color: "#1B6B3A" }}>✓ {fotoNombre} — datos completados, revisá antes de guardar</span>
+            <span style={{ fontSize: 13, color: "#7c6fcd" }}>✓ {fotoNombre} — datos completados, revisá antes de guardar</span>
           ) : (
-            <span style={{ fontSize: 13, color: "#1B6B3A", fontWeight: 500 }}>📷 Subir foto del comprobante (opcional)</span>
+            <span style={{ fontSize: 13, color: "#7c6fcd", fontWeight: 500 }}>📷 Subir foto del comprobante (opcional)</span>
           )}
         </label>
-        {errorFoto && <div style={{ fontSize: 12, color: "#A32D2D", marginBottom: 12, marginTop: -8 }}>{errorFoto}</div>}
+        {errorFoto && <div style={{ fontSize: 12, color: "#f38ba8", marginBottom: 12, marginTop: -8 }}>{errorFoto}</div>}
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Concepto</label>
-            <select value={form.concepto} onChange={(e) => set("concepto", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Concepto</label>
+            <select value={form.concepto} onChange={(e) => set("concepto", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
               <option>Alquiler</option><option>Expensas</option><option>Depósito</option><option>Otro</option>
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Fecha de cobro</label>
-            <input type="date" value={form.fecha} onChange={(e) => set("fecha", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Fecha de cobro</label>
+            <input type="date" value={form.fecha} onChange={(e) => set("fecha", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Mes correspondiente</label>
-            <select value={form.mes} onChange={(e) => set("mes", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Mes correspondiente</label>
+            <select value={form.mes} onChange={(e) => set("mes", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
               <option value="">— Mes —</option>
               {meses.map((m, i) => <option key={i} value={m}>{m}</option>)}
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Año</label>
-            <input type="number" value={form.anio} onChange={(e) => set("anio", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Año</label>
+            <input type="number" value={form.anio} onChange={(e) => set("anio", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Monto</label>
-            <input type="number" value={form.monto} onChange={(e) => set("monto", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Monto</label>
+            <input type="number" value={form.monto} onChange={(e) => set("monto", e.target.value)} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Moneda</label>
-            <select value={form.moneda} onChange={(e) => set("moneda", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Moneda</label>
+            <select value={form.moneda} onChange={(e) => set("moneda", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }}>
               <option>ARS</option><option>USD</option>
             </select>
           </div>
         </div>
         <div style={{ marginTop: 12 }}>
-          <label style={{ fontSize: 12, color: "#888" }}>Notas</label>
-          <input type="text" value={form.notas} onChange={(e) => set("notas", e.target.value)} placeholder="Transferencia, efectivo, op. N°..." style={{ width: "100%", padding: "6px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
+          <label style={{ fontSize: 12, color: "#a0a0c0" }}>Notas</label>
+          <input type="text" value={form.notas} onChange={(e) => set("notas", e.target.value)} placeholder="Transferencia, efectivo, op. N°..." style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 4 }} />
         </div>
         <div style={{ display: "flex", gap: 10, marginTop: 20, justifyContent: "flex-end" }}>
-          <button onClick={onClose} style={{ padding: "8px 16px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer" }}>Cancelar</button>
-          <button onClick={() => onGuardar({ ...form, prop_id: prop.id, direccion: prop.direccion, inquilino: prop.inquilino })} style={{ padding: "8px 16px", background: "#1B6B3A", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontWeight: 600 }}>
+          <button onClick={onClose} style={{ padding: "8px 16px", background: "#2d2b55", border: "1px solid #3d3b6e", borderRadius: 6, cursor: "pointer" }}>Cancelar</button>
+          <button onClick={() => onGuardar({ ...form, prop_id: prop.id, direccion: prop.direccion, inquilino: prop.inquilino })} style={{ padding: "8px 16px", background: "#7c6fcd", color: "#e0e0f0", border: "none", borderRadius: 6, cursor: "pointer", fontWeight: 600 }}>
             Registrar cobro
           </button>
         </div>
@@ -359,19 +359,19 @@ function ModalNueva({ onClose, onGuardar }) {
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
   const inp = (label, key, tipo = "text", ph = "") => (
     <div>
-      <label style={{ fontSize: 12, color: "#888" }}>{label}</label>
-      <input type={tipo} value={form[key] || ""} onChange={(e) => set(key, e.target.value)} placeholder={ph} style={{ width: "100%", padding: "6px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 3 }} />
+      <label style={{ fontSize: 12, color: "#a0a0c0" }}>{label}</label>
+      <input type={tipo} value={form[key] || ""} onChange={(e) => set(key, e.target.value)} placeholder={ph} style={{ width: "100%", padding: "6px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 3 }} />
     </div>
   );
   return (
     <div onClick={onClose} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1100, display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <div onClick={(e) => e.stopPropagation()} style={{ background: "#fff", borderRadius: 16, width: "min(680px, 96vw)", maxHeight: "90vh", overflow: "auto", padding: 28 }}>
+      <div onClick={(e) => e.stopPropagation()} style={{ background: "#252538", borderRadius: 16, width: "min(680px, 96vw)", maxHeight: "90vh", overflow: "auto", padding: 28 }}>
         <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 20 }}>Nueva propiedad</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <div style={{ gridColumn: "1 / -1" }}>{inp("Dirección *", "direccion", "text", "Ej: Gurruchaga 381 - 5A - CABA")}</div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Titular</label>
-            <select value={form.titular} onChange={(e) => set("titular", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 3 }}>
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Titular</label>
+            <select value={form.titular} onChange={(e) => set("titular", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 3 }}>
               <option value="GC">GC – Gerardo Castillo</option>
               <option value="EC">EC – Eliana Castillo</option>
               <option value="CC">CC – Cecilia Castillo</option>
@@ -379,8 +379,8 @@ function ModalNueva({ onClose, onGuardar }) {
             </select>
           </div>
           <div>
-            <label style={{ fontSize: 12, color: "#888" }}>Estado</label>
-            <select value={form.estado} onChange={(e) => set("estado", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, marginTop: 3 }}>
+            <label style={{ fontSize: 12, color: "#a0a0c0" }}>Estado</label>
+            <select value={form.estado} onChange={(e) => set("estado", e.target.value)} style={{ width: "100%", padding: "7px 8px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, marginTop: 3 }}>
               <option value="alquilado">Alquilado</option>
               <option value="libre">Libre</option>
               <option value="vendido">Vendido</option>
@@ -404,8 +404,8 @@ function ModalNueva({ onClose, onGuardar }) {
           {inp("Mail inquilino", "mail")}
         </div>
         <div style={{ display: "flex", gap: 10, marginTop: 24, justifyContent: "flex-end" }}>
-          <button onClick={onClose} style={{ padding: "8px 16px", background: "#f5f5f3", border: "1px solid #ddd", borderRadius: 6, cursor: "pointer" }}>Cancelar</button>
-          <button onClick={() => { if (!form.direccion) return alert("La dirección es obligatoria"); onGuardar(form); }} style={{ padding: "8px 16px", background: "#1B6B3A", color: "#fff", border: "none", borderRadius: 6, cursor: "pointer", fontWeight: 600 }}>
+          <button onClick={onClose} style={{ padding: "8px 16px", background: "#2d2b55", border: "1px solid #3d3b6e", borderRadius: 6, cursor: "pointer" }}>Cancelar</button>
+          <button onClick={() => { if (!form.direccion) return alert("La dirección es obligatoria"); onGuardar(form); }} style={{ padding: "8px 16px", background: "#7c6fcd", color: "#e0e0f0", border: "none", borderRadius: 6, cursor: "pointer", fontWeight: 600 }}>
             Guardar propiedad
           </button>
         </div>
@@ -460,14 +460,14 @@ function PlanillaCelda({ valor, onCommit }) {
           if (e.key === "Enter") e.target.blur();
           if (e.key === "Escape") { setVal(valor || ""); setEditando(false); }
         }}
-        style={{ width: "100%", border: "1.5px solid #1B6B3A", borderRadius: 3, padding: "3px 5px", fontSize: 12, fontFamily: "inherit" }}
+        style={{ width: "100%", border: "1.5px solid #7c6fcd", borderRadius: 3, padding: "3px 5px", fontSize: 12, fontFamily: "inherit" }}
       />
     );
   }
   return (
     <div onClick={() => setEditando(true)} title="Clic para editar"
       style={{ padding: "5px 6px", cursor: "text", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-      {valor || <span style={{ color: "#d8d8d4" }}>—</span>}
+      {valor || <span style={{ color: "#4a4a6a" }}>—</span>}
     </div>
   );
 }
@@ -483,17 +483,17 @@ function PlanillaTab({ props, onUpdateCell }) {
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
         <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Planilla completa</div>
-        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, width: 220 }} />
+        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 220 }} />
       </div>
-      <div style={{ fontSize: 12, color: "#888", marginBottom: 10 }}>
+      <div style={{ fontSize: 12, color: "#a0a0c0", marginBottom: 10 }}>
         Hacé clic en cualquier celda para editarla. Los cambios se guardan automáticamente al salir del campo (Enter o clic afuera).
       </div>
-      <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #eee", overflow: "auto", maxWidth: "100%" }}>
+      <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%" }}>
         <table style={{ borderCollapse: "collapse", fontSize: 12, tableLayout: "fixed" }}>
           <thead>
-            <tr style={{ background: "#f7f6f3" }}>
+            <tr style={{ background: "#1e1e2e" }}>
               {COLUMNAS_PLANILLA.map((c) => (
-                <th key={c.key} style={{ position: "sticky", top: 0, background: "#f7f6f3", padding: "8px 6px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 10.5, textTransform: "uppercase", borderBottom: "1px solid #eee", borderRight: "1px solid #f0f0f0", width: c.w, minWidth: c.w }}>
+                <th key={c.key} style={{ position: "sticky", top: 0, background: "#1e1e2e", padding: "8px 6px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 10.5, textTransform: "uppercase", borderBottom: "1px solid #eee", borderRight: "1px solid #f0f0f0", width: c.w, minWidth: c.w }}>
                   {c.label}
                 </th>
               ))}
@@ -521,7 +521,7 @@ function PlanillaTab({ props, onUpdateCell }) {
           </tbody>
         </table>
       </div>
-      <div style={{ marginTop: 8, fontSize: 12, color: "#aaa" }}>{filtradas.length} de {props.length} propiedades · {COLUMNAS_PLANILLA.length} columnas</div>
+      <div style={{ marginTop: 8, fontSize: 12, color: "#7070a0" }}>{filtradas.length} de {props.length} propiedades · {COLUMNAS_PLANILLA.length} columnas</div>
     </div>
   );
 }
@@ -693,16 +693,16 @@ export default function App() {
 
   if (cargando) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif", color: "#888" }}>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "sans-serif", color: "#a0a0c0" }}>
         Cargando portfolio...
       </div>
     );
   }
 
   return (
-    <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", minHeight: "100vh", background: "#f7f6f3", color: "#1a1a18" }}>
-      <div style={{ background: "#1B6B3A", padding: "0 24px", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
-        <div style={{ padding: "14px 0", color: "#fff", fontWeight: 700, fontSize: 15, letterSpacing: "-0.01em", marginRight: 12 }}>
+    <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", minHeight: "100vh", background: "#1e1e2e", color: "#e0e0f0" }}>
+      <div style={{ background: "#7c6fcd", padding: "0 24px", display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
+        <div style={{ padding: "14px 0", color: "#e0e0f0", fontWeight: 700, fontSize: 15, letterSpacing: "-0.01em", marginRight: 12 }}>
           Gestión Inmobiliaria
         </div>
         {NAV.map((n) => (
@@ -712,10 +712,10 @@ export default function App() {
           </button>
         ))}
         <div style={{ flex: 1 }} />
-        <button onClick={exportarExcel} style={{ padding: "7px 14px", background: "rgba(255,255,255,0.1)", color: "#fff", border: "1px solid rgba(255,255,255,0.25)", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>
+        <button onClick={exportarExcel} style={{ padding: "7px 14px", background: "rgba(137,180,250,0.15)", color: "#e0e0f0", border: "1px solid rgba(137,180,250,0.3)", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>
           Copia de seguridad
         </button>
-        <button onClick={() => setNuevaModal(true)} style={{ padding: "7px 14px", background: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>
+        <button onClick={() => setNuevaModal(true)} style={{ padding: "7px 14px", background: "rgba(203,166,247,0.2)", color: "#e0e0f0", border: "1px solid rgba(203,166,247,0.4)", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 500 }}>
           + Nueva propiedad
         </button>
       </div>
@@ -726,12 +726,12 @@ export default function App() {
             <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 18 }}>Resumen del portfolio</div>
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 24 }}>
               <KPI label="Total propiedades" value={stats.total} />
-              <KPI label="Alquiladas" value={stats.alquiladas} color="#1B6B3A" />
-              <KPI label="Libres" value={stats.libres} color="#185FA5" />
+              <KPI label="Alquiladas" value={stats.alquiladas} color="#7c6fcd" />
+              <KPI label="Libres" value={stats.libres} color="#89b4fa" />
               <KPI label="Vendidas" value={stats.vendidas} color="#888" />
-              <KPI label="Contratos vencidos" value={stats.vencidos} color={stats.vencidos > 0 ? "#A32D2D" : "#1a1a18"} sub="Requieren atención inmediata" />
-              <KPI label="Vencen en 60 días" value={stats.proximos} color={stats.proximos > 0 ? "#854F0B" : "#1a1a18"} sub="Renovar pronto" />
-              <KPI label="Cobrado este mes" value={"$" + stats.cobradoMes.toLocaleString("es-AR")} color="#1B6B3A" sub="Solo ARS" />
+              <KPI label="Contratos vencidos" value={stats.vencidos} color={stats.vencidos > 0 ? "#f38ba8" : "#e0e0f0"} sub="Requieren atención inmediata" />
+              <KPI label="Vencen en 60 días" value={stats.proximos} color={stats.proximos > 0 ? "#fab387" : "#e0e0f0"} sub="Renovar pronto" />
+              <KPI label="Cobrado este mes" value={"$" + stats.cobradoMes.toLocaleString("es-AR")} color="#7c6fcd" sub="Solo ARS" />
             </div>
 
             <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 12 }}>Semáforo de vencimientos</div>
@@ -746,9 +746,9 @@ export default function App() {
                 const c = COLORES_SEMAFORO[sem];
                 return (
                   <div key={p.id} onClick={() => setPropSel(p)}
-                    style={{ background: "#fff", border: `1px solid ${c.bg}`, borderLeft: `4px solid ${c.color}`, borderRadius: 8, padding: "12px 14px", cursor: "pointer" }}>
+                    style={{ background: "#252538", border: `1px solid ${c.bg}`, borderLeft: `4px solid ${c.color}`, borderRadius: 8, padding: "12px 14px", cursor: "pointer" }}>
                     <div style={{ fontSize: 13, fontWeight: 500, marginBottom: 4 }}>{p.direccion}</div>
-                    <div style={{ fontSize: 12, color: "#666", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"}</div>
+                    <div style={{ fontSize: 12, color: "#b0b0d0", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"}</div>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                       <Badge tipo={sem} />
                       {dias !== null && <span style={{ fontSize: 11, color: c.color, fontWeight: 500 }}>{dias < 0 ? `−${Math.abs(dias)}d` : `+${dias}d`}</span>}
@@ -764,8 +764,8 @@ export default function App() {
           <div>
             <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
               <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Propiedades</div>
-              <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar por dirección, inquilino..." style={{ padding: "7px 12px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, width: 240 }} />
-              <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13 }}>
+              <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar por dirección, inquilino..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 240 }} />
+              <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13 }}>
                 <option value="todos">Todos los estados</option>
                 <option value="vigente">Vigentes</option>
                 <option value="proximo">Próximos a vencer</option>
@@ -773,23 +773,23 @@ export default function App() {
                 <option value="libre">Libres</option>
                 <option value="vendido">Vendidos</option>
               </select>
-              <select value={filtroTitular} onChange={(e) => setFiltroTitular(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13 }}>
+              <select value={filtroTitular} onChange={(e) => setFiltroTitular(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13 }}>
                 <option value="todos">Todos los titulares</option>
                 <option value="GC">GC – Gerardo</option>
                 <option value="EC">EC – Eliana</option>
                 <option value="CC">CC – Cecilia</option>
               </select>
             </div>
-            <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #eee", overflow: "hidden" }}>
+            <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "hidden" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
-                  <tr style={{ background: "#f7f6f3", borderBottom: "1px solid #eee" }}>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>Dirección</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>Inquilino</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>Titular</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>Alquiler</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>Vencimiento</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>Estado</th>
+                  <tr style={{ background: "#1e1e2e", borderBottom: "1px solid #eee" }}>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Dirección</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Inquilino</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Titular</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Alquiler</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Vencimiento</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>Estado</th>
                     <th style={{ padding: "10px 14px" }}></th>
                   </tr>
                 </thead>
@@ -801,18 +801,18 @@ export default function App() {
                       <tr key={p.id} style={{ borderBottom: "0.5px solid #f0f0f0", background: i % 2 === 0 ? "#fff" : "#fafaf9" }}>
                         <td style={{ padding: "10px 14px" }}>
                           <div style={{ fontWeight: 500 }}>{p.direccion}</div>
-                          <div style={{ fontSize: 11, color: "#aaa" }}>{p.mts2 ? `${p.mts2} m² · ${p.ambientes} amb.` : ""}</div>
+                          <div style={{ fontSize: 11, color: "#7070a0" }}>{p.mts2 ? `${p.mts2} m² · ${p.ambientes} amb.` : ""}</div>
                         </td>
-                        <td style={{ padding: "10px 14px", color: p.inquilino ? "#1a1a18" : "#ccc" }}>{p.inquilino || "—"}</td>
-                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#f0f7f3", color: "#1B6B3A", borderRadius: 4, padding: "1px 6px", fontSize: 11, fontWeight: 600 }}>{p.titular}</span></td>
+                        <td style={{ padding: "10px 14px", color: p.inquilino ? "#e0e0f0" : "#ccc" }}>{p.inquilino || "—"}</td>
+                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#2d2b55", color: "#7c6fcd", borderRadius: 4, padding: "1px 6px", fontSize: 11, fontWeight: 600, color: "#cba6f7" }}>{p.titular}</span></td>
                         <td style={{ padding: "10px 14px" }}>{p.alq_1 ? fmtARS(p.alq_1) : "—"}</td>
-                        <td style={{ padding: "10px 14px" }}>{fv ? fmtFecha(fv) : <span style={{ color: "#ccc" }}>—</span>}</td>
+                        <td style={{ padding: "10px 14px" }}>{fv ? fmtFecha(fv) : <span style={{ color: "#4a4a6a" }}>—</span>}</td>
                         <td style={{ padding: "10px 14px" }}><Badge tipo={sem} /></td>
                         <td style={{ padding: "10px 14px" }}>
                           <div style={{ display: "flex", gap: 6 }}>
-                            <button onClick={() => setPropSel(p)} style={{ padding: "4px 10px", border: "1px solid #ddd", borderRadius: 5, background: "#fff", cursor: "pointer", fontSize: 12 }}>Ver</button>
+                            <button onClick={() => setPropSel(p)} style={{ padding: "4px 10px", border: "1px solid #3d3b6e", borderRadius: 5, background: "#252538", cursor: "pointer", fontSize: 12 }}>Ver</button>
                             {p.estado === "alquilado" && (
-                              <button onClick={() => setCobroModal(p)} style={{ padding: "4px 10px", border: "1px solid #1B6B3A", borderRadius: 5, background: "#f0f7f3", color: "#1B6B3A", cursor: "pointer", fontSize: 12, fontWeight: 500 }}>+ Cobro</button>
+                              <button onClick={() => setCobroModal(p)} style={{ padding: "4px 10px", border: "1px solid #7c6fcd", borderRadius: 5, background: "#2d2b55", color: "#7c6fcd", cursor: "pointer", fontSize: 12, fontWeight: 500 }}>+ Cobro</button>
                             )}
                           </div>
                         </td>
@@ -821,9 +821,9 @@ export default function App() {
                   })}
                 </tbody>
               </table>
-              {propsFiltradas.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "#aaa" }}>Sin resultados</div>}
+              {propsFiltradas.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "#7070a0" }}>Sin resultados</div>}
             </div>
-            <div style={{ marginTop: 8, fontSize: 12, color: "#aaa" }}>{propsFiltradas.length} de {props.length} propiedades</div>
+            <div style={{ marginTop: 8, fontSize: 12, color: "#7070a0" }}>{propsFiltradas.length} de {props.length} propiedades</div>
           </div>
         )}
 
@@ -835,20 +835,20 @@ export default function App() {
           <div>
             <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
               <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Registro de cobros</div>
-              <input value={filtroCobros} onChange={(e) => setFiltroCobros(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #ddd", borderRadius: 6, fontSize: 13, width: 200 }} />
+              <input value={filtroCobros} onChange={(e) => setFiltroCobros(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 200 }} />
             </div>
             {cobros.length === 0 ? (
-              <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #eee", padding: 48, textAlign: "center", color: "#aaa" }}>
-                <div style={{ fontSize: 15, marginBottom: 8, color: "#666" }}>Sin cobros registrados</div>
+              <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", padding: 48, textAlign: "center", color: "#7070a0" }}>
+                <div style={{ fontSize: 15, marginBottom: 8, color: "#b0b0d0" }}>Sin cobros registrados</div>
                 <div style={{ fontSize: 13 }}>Desde Propiedades, hacé clic en "+ Cobro" en cualquier unidad alquilada.</div>
               </div>
             ) : (
-              <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #eee", overflow: "hidden" }}>
+              <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "hidden" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                   <thead>
-                    <tr style={{ background: "#f7f6f3", borderBottom: "1px solid #eee" }}>
+                    <tr style={{ background: "#1e1e2e", borderBottom: "1px solid #eee" }}>
                       {["Fecha", "Dirección", "Inquilino", "Concepto", "Mes/Año", "Monto", "Notas"].map((h) => (
-                        <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#666", fontSize: 11, textTransform: "uppercase" }}>{h}</th>
+                        <th key={h} style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#b0b0d0", fontSize: 11, textTransform: "uppercase" }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
@@ -861,10 +861,10 @@ export default function App() {
                         <td style={{ padding: "10px 14px" }}>{new Date(c.fecha).toLocaleDateString("es-AR")}</td>
                         <td style={{ padding: "10px 14px", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.direccion}</td>
                         <td style={{ padding: "10px 14px" }}>{c.inquilino || "—"}</td>
-                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#f0f7f3", color: "#1B6B3A", borderRadius: 4, padding: "1px 6px", fontSize: 11 }}>{c.concepto}</span></td>
+                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#2d2b55", color: "#7c6fcd", borderRadius: 4, padding: "1px 6px", fontSize: 11 }}>{c.concepto}</span></td>
                         <td style={{ padding: "10px 14px" }}>{c.mes} {c.anio}</td>
                         <td style={{ padding: "10px 14px", fontWeight: 500 }}>{c.moneda === "ARS" ? fmtARS(c.monto) : `U$S ${Number(c.monto).toLocaleString()}`}</td>
-                        <td style={{ padding: "10px 14px", color: "#888" }}>{c.notas || "—"}</td>
+                        <td style={{ padding: "10px 14px", color: "#a0a0c0" }}>{c.notas || "—"}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -888,19 +888,19 @@ export default function App() {
               return (
                 <div key={grupo.tipo} style={{ marginBottom: 24 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 4 }}>{grupo.label} ({lista.length})</div>
-                  <div style={{ fontSize: 12, color: "#888", marginBottom: 10 }}>{grupo.desc}</div>
+                  <div style={{ fontSize: 12, color: "#a0a0c0", marginBottom: 10 }}>{grupo.desc}</div>
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 8 }}>
                     {lista.map((p) => {
                       const dias = diasParaVencer(p.periodo);
                       return (
-                        <div key={p.id} onClick={() => setPropSel(p)} style={{ background: "#fff", border: "1px solid #eee", borderRadius: 8, padding: "12px 14px", cursor: "pointer" }}>
+                        <div key={p.id} onClick={() => setPropSel(p)} style={{ background: "#252538", border: "1px solid #3d3b6e", borderRadius: 8, padding: "12px 14px", cursor: "pointer" }}>
                           <div style={{ fontWeight: 500, fontSize: 13, marginBottom: 3 }}>{p.direccion}</div>
-                          <div style={{ fontSize: 12, color: "#666", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"} {p.telefono ? `· ${p.telefono}` : ""}</div>
+                          <div style={{ fontSize: 12, color: "#b0b0d0", marginBottom: 6 }}>{p.inquilino || "Sin inquilino"} {p.telefono ? `· ${p.telefono}` : ""}</div>
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                            <span style={{ fontSize: 11, color: "#888" }}>{p.periodo || "Sin período"}</span>
+                            <span style={{ fontSize: 11, color: "#a0a0c0" }}>{p.periodo || "Sin período"}</span>
                             {dias !== null && <Badge tipo={semaforo(p)} />}
                           </div>
-                          {p.mail && <div style={{ fontSize: 11, color: "#185FA5", marginTop: 4 }}>{p.mail}</div>}
+                          {p.mail && <div style={{ fontSize: 11, color: "#89b4fa", marginTop: 4 }}>{p.mail}</div>}
                         </div>
                       );
                     })}
@@ -909,9 +909,9 @@ export default function App() {
               );
             })}
             {stats.vencidos + stats.proximos + stats.libres === 0 && (
-              <div style={{ background: "#f0f7f3", borderRadius: 10, padding: 40, textAlign: "center", color: "#1B6B3A" }}>
+              <div style={{ background: "#2d2b55", borderRadius: 10, padding: 40, textAlign: "center", color: "#7c6fcd" }}>
                 <div style={{ fontSize: 15, fontWeight: 600 }}>Todo en orden</div>
-                <div style={{ fontSize: 13, color: "#666", marginTop: 4 }}>No hay contratos vencidos ni propiedades sin gestionar.</div>
+                <div style={{ fontSize: 13, color: "#b0b0d0", marginTop: 4 }}>No hay contratos vencidos ni propiedades sin gestionar.</div>
               </div>
             )}
           </div>
