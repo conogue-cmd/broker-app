@@ -1073,8 +1073,8 @@ export default function App() {
           <div>
             <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
               <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Propiedades</div>
-              <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar por dirección, inquilino..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 240 }} />
-              <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13 }}>
+              <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar por dirección, inquilino..." style={{ padding: "7px 12px", border: "1px solid #5a4fa3", borderRadius: 6, fontSize: 13, width: 240, background: "#2d2b55", color: "#e0e0f0" }} />
+              <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #5a4fa3", borderRadius: 6, fontSize: 13, background: "#2d2b55", color: "#e0e0f0" }}>
                 <option value="todos">Todos los estados</option>
                 <option value="vigente">Vigentes</option>
                 <option value="proximo">Próximos a vencer</option>
@@ -1082,23 +1082,23 @@ export default function App() {
                 <option value="libre">Libres</option>
                 <option value="vendido">Vendidos</option>
               </select>
-              <select value={filtroTitular} onChange={(e) => setFiltroTitular(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13 }}>
+              <select value={filtroTitular} onChange={(e) => setFiltroTitular(e.target.value)} style={{ padding: "7px 10px", border: "1px solid #5a4fa3", borderRadius: 6, fontSize: 13, background: "#2d2b55", color: "#e0e0f0" }}>
                 <option value="todos">Todos los titulares</option>
                 <option value="GC">GC – Gerardo</option>
                 <option value="EC">EC – Eliana</option>
                 <option value="CC">CC – Cecilia</option>
               </select>
             </div>
-            <div style={{ background: "#252538", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "hidden" }}>
+            <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "hidden" }}>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
                 <thead>
-                  <tr style={{ background: "#1e1e2e", borderBottom: "1px solid #eee" }}>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Dirección</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Inquilino</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Titular</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Alquiler</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Vencimiento</th>
-                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 500, color: "#d0d0f0", fontSize: 11, textTransform: "uppercase" }}>Estado</th>
+                  <tr style={{ background: "#2d2b55", borderBottom: "2px solid #5a4fa3" }}>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase" }}>Dirección</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase" }}>Inquilino</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase" }}>Titular</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase" }}>Alquiler</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase" }}>Vencimiento</th>
+                    <th style={{ padding: "10px 14px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 11, textTransform: "uppercase" }}>Estado</th>
                     <th style={{ padding: "10px 14px" }}></th>
                   </tr>
                 </thead>
@@ -1107,21 +1107,23 @@ export default function App() {
                     const sem = semaforo(p);
                     const fv = vencimientoContrato(p.periodo);
                     return (
-                      <tr key={p.id} style={{ borderBottom: "0.5px solid #f0f0f0", background: i % 2 === 0 ? "#fff" : "#fafaf9" }}>
+                      <tr key={p.id} style={{ borderBottom: "1px solid #e8e8f0", background: i % 2 === 0 ? "#fff" : "#f5f4ff" }}
+                        onMouseEnter={e => e.currentTarget.style.background = "#ede9ff"}
+                        onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? "#fff" : "#f5f4ff"}>
                         <td style={{ padding: "10px 14px" }}>
-                          <div style={{ fontWeight: 500 }}>{p.direccion}</div>
-                          <div style={{ fontSize: 11, color: "#c0c0e0" }}>{p.mts2 ? `${p.mts2} m² · ${p.ambientes} amb.` : ""}</div>
+                          <div style={{ fontWeight: 600, color: "#111" }}>{p.direccion}</div>
+                          <div style={{ fontSize: 11, color: "#666", marginTop: 2 }}>{p.mts2 ? `${p.mts2} m² · ${p.ambientes} amb.` : ""}</div>
                         </td>
-                        <td style={{ padding: "10px 14px", color: p.inquilino ? "#e0e0f0" : "#ccc" }}>{p.inquilino || "—"}</td>
-                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#2d2b55", color: "#7c6fcd", borderRadius: 4, padding: "1px 6px", fontSize: 11, fontWeight: 600, color: "#cba6f7" }}>{p.titular}</span></td>
-                        <td style={{ padding: "10px 14px" }}>{p.alq_1 ? fmtARS(p.alq_1) : "—"}</td>
-                        <td style={{ padding: "10px 14px" }}>{fv ? fmtFecha(fv) : <span style={{ color: "#4a4a6a" }}>—</span>}</td>
+                        <td style={{ padding: "10px 14px", color: p.inquilino ? "#111" : "#aaa", fontWeight: p.inquilino ? 500 : 400 }}>{p.inquilino || "—"}</td>
+                        <td style={{ padding: "10px 14px" }}><span style={{ background: "#2d2b55", color: "#cba6f7", borderRadius: 4, padding: "2px 8px", fontSize: 11, fontWeight: 700 }}>{p.titular}</span></td>
+                        <td style={{ padding: "10px 14px", color: "#111", fontWeight: 600 }}>{p.alq_1 ? fmtARS(p.alq_1) : <span style={{color:"#aaa"}}>—</span>}</td>
+                        <td style={{ padding: "10px 14px", color: "#111" }}>{fv ? fmtFecha(fv) : <span style={{ color: "#aaa" }}>—</span>}</td>
                         <td style={{ padding: "10px 14px" }}><Badge tipo={sem} /></td>
                         <td style={{ padding: "10px 14px" }}>
                           <div style={{ display: "flex", gap: 6 }}>
-                            <button onClick={() => setPropSel(p)} style={{ padding: "4px 10px", border: "1px solid #3d3b6e", borderRadius: 5, background: "#252538", cursor: "pointer", fontSize: 12 }}>Ver</button>
+                            <button onClick={() => setPropSel(p)} style={{ padding: "4px 10px", border: "1px solid #7c6fcd", borderRadius: 5, background: "#fff", color: "#5a4fa3", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>Ver</button>
                             {p.estado === "alquilado" && (
-                              <button onClick={() => setCobroModal(p)} style={{ padding: "4px 10px", border: "1px solid #7c6fcd", borderRadius: 5, background: "#2d2b55", color: "#7c6fcd", cursor: "pointer", fontSize: 12, fontWeight: 500 }}>+ Cobro</button>
+                              <button onClick={() => setCobroModal(p)} style={{ padding: "4px 10px", border: "1px solid #5a4fa3", borderRadius: 5, background: "#2d2b55", color: "#cba6f7", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>+ Cobro</button>
                             )}
                           </div>
                         </td>
@@ -1130,7 +1132,7 @@ export default function App() {
                   })}
                 </tbody>
               </table>
-              {propsFiltradas.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "#c0c0e0" }}>Sin resultados</div>}
+              {propsFiltradas.length === 0 && <div style={{ padding: 40, textAlign: "center", color: "#888" }}>Sin resultados</div>}
             </div>
             <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>{propsFiltradas.length} de {props.length} propiedades</div>
           </div>
