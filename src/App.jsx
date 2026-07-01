@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "./supabaseClient";
 import * as XLSX from "xlsx";
 
@@ -672,88 +672,168 @@ const COLUMNAS_PLANILLA = [
   { key: "admin_edificio", label: "Adm. edificio", w: 200 },
 ];
 
-function PlanillaCelda({ valor, onCommit }) {
-  const [editando, setEditando] = useState(false);
-  const [val, setVal] = useState(valor || "");
-
-  useEffect(() => { setVal(valor || ""); }, [valor]);
-
-  if (editando) {
-    return (
-      <input
-        autoFocus
-        value={val}
-        onChange={(e) => setVal(e.target.value)}
-        onBlur={() => { setEditando(false); if (val !== (valor || "")) onCommit(val); }}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") e.target.blur();
-          if (e.key === "Escape") { setVal(valor || ""); setEditando(false); }
-        }}
-        style={{ width: "100%", border: "none", padding: "4px 6px", fontSize: 12, fontFamily: "inherit", background: "#000", color: "#fff", outline: "none" }}
-      />
-    );
-  }
-  return (
-    <div onClick={() => setEditando(true)} title="Clic para editar"
-      style={{ padding: "5px 6px", cursor: "text", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#111", background: "transparent" }}>
-      {valor || <span style={{ color: "#ccc" }}>—</span>}
-    </div>
-  );
-}
-
 function PlanillaTab({ props, onUpdateCell }) {
   const [busqueda, setBusqueda] = useState("");
+  const [celda, setCelda] = useState({ fila: 0, col: 0 }); // celda activa
+  const [editando, setEditando] = useState(false);
+  const [valEdit, setValEdit] = useState("");
+  const tableRef = useRef(null);
+
   const filtradas = props.filter((p) => {
     const txt = (p.direccion + " " + p.inquilino).toLowerCase();
     return !busqueda || txt.includes(busqueda.toLowerCase());
   });
 
+  const COLS = COLUMNAS_PLANILLA;
+  const nCols = COLS.length;
+  const nFilas = filtradas.length;
+
+  function mover(df, dc) {
+    setCelda(prev => ({
+      fila: Math.max(0, Math.min(nFilas - 1, prev.fila + df)),
+      col: Math.max(0, Math.min(nCols - 1, prev.col + dc)),
+    }));
+  }
+
+  function iniciarEdicion(fila, col) {
+    const p = filtradas[fila];
+    const key = COLS[col].key;
+    if (key === "estado") return; // estado se edita con select directo
+    setValEdit(p[key] || "");
+    setEditando(true);
+  }
+
+  function confirmarEdicion() {
+    if (!editando) return;
+    const p = filtradas[celda.fila];
+    const key = COLS[celda.col].key;
+    const valorActual = p[key] || "";
+    if (valEdit !== valorActual) onUpdateCell(p.id, key, valEdit);
+    setEditando(false);
+  }
+
+  function handleKeyDown(e) {
+    if (editando) {
+      if (e.key === "Escape") { setEditando(false); e.preventDefault(); }
+      if (e.key === "Enter") { confirmarEdicion(); e.preventDefault(); }
+      if (e.key === "Tab") { confirmarEdicion(); mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); }
+      return;
+    }
+    switch (e.key) {
+      case "ArrowUp":    mover(-1, 0); e.preventDefault(); break;
+      case "ArrowDown":  mover(1, 0);  e.preventDefault(); break;
+      case "ArrowLeft":  mover(0, -1); e.preventDefault(); break;
+      case "ArrowRight": mover(0, 1);  e.preventDefault(); break;
+      case "Tab":        mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); break;
+      case "Enter":      iniciarEdicion(celda.fila, celda.col); e.preventDefault(); break;
+      case "F2":         iniciarEdicion(celda.fila, celda.col); e.preventDefault(); break;
+      default:
+        // Empezar a escribir directamente activa la edición
+        if (e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+          setValEdit(e.key);
+          setEditando(true);
+          e.preventDefault();
+        }
+    }
+  }
+
+  // Scroll automático a la celda activa
+  useEffect(() => {
+    if (!tableRef.current) return;
+    const td = tableRef.current.querySelector(`[data-celda="${celda.fila}-${celda.col}"]`);
+    if (td) td.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [celda]);
+
   return (
     <div>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
         <div style={{ fontSize: 20, fontWeight: 600, flex: 1 }}>Planilla completa</div>
-        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 220 }} />
+        <input value={busqueda} onChange={(e) => setBusqueda(e.target.value)} placeholder="Buscar..." style={{ padding: "7px 12px", border: "1px solid #3d3b6e", borderRadius: 6, fontSize: 13, width: 220, background: "#1e1e2e", color: "#e0e0f0" }} />
       </div>
       <div style={{ fontSize: 12, color: "#c0c0e0", marginBottom: 10 }}>
-        Hacé clic en cualquier celda para editarla. Los cambios se guardan automáticamente al salir del campo (Enter o clic afuera).
+        Usá las <b style={{color:"#cba6f7"}}>flechas del teclado</b> para moverte · <b style={{color:"#cba6f7"}}>Enter o F2</b> para editar · <b style={{color:"#cba6f7"}}>Escape</b> para cancelar · También podés hacer clic en cualquier celda
       </div>
-      <div style={{ background: "#fff", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%" }}>
+      <div
+        ref={tableRef}
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+        onFocus={() => {}}
+        style={{ background: "#fff", borderRadius: 10, border: "1px solid #3d3b6e", overflow: "auto", maxWidth: "100%", maxHeight: "70vh", outline: "none" }}
+      >
         <table style={{ borderCollapse: "collapse", fontSize: 12, tableLayout: "fixed" }}>
           <thead>
             <tr style={{ background: "#2d2b55" }}>
-              {COLUMNAS_PLANILLA.map((c) => (
-                <th key={c.key} style={{ position: "sticky", top: 0, background: "#2d2b55", padding: "8px 6px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 10.5, textTransform: "uppercase", borderBottom: "2px solid #5a4fa3", borderRight: "1px solid #3d3b6e", width: c.w, minWidth: c.w }}>
+              {COLS.map((c) => (
+                <th key={c.key} style={{ position: "sticky", top: 0, zIndex: 2, background: "#2d2b55", padding: "8px 6px", textAlign: "left", fontWeight: 600, color: "#cba6f7", fontSize: 10.5, textTransform: "uppercase", borderBottom: "2px solid #5a4fa3", borderRight: "1px solid #3d3b6e", width: c.w, minWidth: c.w }}>
                   {c.label}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filtradas.map((p, i) => (
-              <tr key={p.id} style={{ background: i % 2 === 0 ? "#fff" : "#f5f4ff" }}>
-                {COLUMNAS_PLANILLA.map((c) => (
-                  <td key={c.key} style={{ borderRight: "1px solid #e0e0e0", borderBottom: "1px solid #e8e8f0", padding: 0 }}>
-                    {c.key === "estado" ? (
-                      <select value={p.estado} onChange={(e) => onUpdateCell(p.id, "estado", e.target.value)}
-                        style={{ width: "100%", border: "none", background: "transparent", fontSize: 12, padding: "5px 4px", fontFamily: "inherit", color: "#111", cursor: "pointer" }}>
-                        <option value="alquilado">Alquilado</option>
-                        <option value="libre">Libre</option>
-                        <option value="vendido">Vendido</option>
-                      </select>
-                    ) : (
-                      <PlanillaCelda valor={p[c.key]} onCommit={(v) => onUpdateCell(p.id, c.key, v)} />
-                    )}
-                  </td>
-                ))}
+            {filtradas.map((p, fi) => (
+              <tr key={p.id} style={{ background: fi % 2 === 0 ? "#fff" : "#f5f4ff" }}>
+                {COLS.map((c, ci) => {
+                  const activa = celda.fila === fi && celda.col === ci;
+                  const estaEditando = activa && editando;
+                  return (
+                    <td
+                      key={c.key}
+                      data-celda={`${fi}-${ci}`}
+                      onClick={() => { setCelda({ fila: fi, col: ci }); tableRef.current?.focus(); }}
+                      onDoubleClick={() => { setCelda({ fila: fi, col: ci }); iniciarEdicion(fi, ci); }}
+                      style={{
+                        borderRight: "1px solid #e0e0e0",
+                        borderBottom: "1px solid #e8e8f0",
+                        padding: 0,
+                        outline: activa ? "2px solid #7c6fcd" : "none",
+                        outlineOffset: "-2px",
+                        background: activa ? (estaEditando ? "#000" : "#ede9ff") : "transparent",
+                        position: "relative",
+                      }}
+                    >
+                      {c.key === "estado" ? (
+                        <select
+                          value={p.estado}
+                          onChange={(e) => onUpdateCell(p.id, "estado", e.target.value)}
+                          style={{ width: "100%", border: "none", background: "transparent", fontSize: 12, padding: "5px 4px", fontFamily: "inherit", color: "#111", cursor: "pointer" }}
+                        >
+                          <option value="alquilado">Alquilado</option>
+                          <option value="libre">Libre</option>
+                          <option value="vendido">Vendido</option>
+                        </select>
+                      ) : estaEditando ? (
+                        <input
+                          autoFocus
+                          value={valEdit}
+                          onChange={(e) => setValEdit(e.target.value)}
+                          onBlur={confirmarEdicion}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") { confirmarEdicion(); e.preventDefault(); }
+                            if (e.key === "Escape") { setEditando(false); e.preventDefault(); tableRef.current?.focus(); }
+                            if (e.key === "Tab") { confirmarEdicion(); mover(0, e.shiftKey ? -1 : 1); e.preventDefault(); tableRef.current?.focus(); }
+                            e.stopPropagation();
+                          }}
+                          style={{ width: "100%", border: "none", padding: "4px 6px", fontSize: 12, fontFamily: "inherit", background: "#000", color: "#fff", outline: "none" }}
+                        />
+                      ) : (
+                        <div style={{ padding: "5px 6px", minHeight: 18, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "#111" }}>
+                          {p[c.key] || <span style={{ color: "#ccc" }}>—</span>}
+                        </div>
+                      )}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-      <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>{filtradas.length} de {props.length} propiedades · {COLUMNAS_PLANILLA.length} columnas</div>
+      <div style={{ marginTop: 8, fontSize: 12, color: "#c0c0e0" }}>{filtradas.length} de {props.length} propiedades · {COLS.length} columnas · Celda: fila {celda.fila + 1}, col {celda.col + 1}</div>
     </div>
   );
 }
+
 
 // ─── APP PRINCIPAL ────────────────────────────────────────────────────────────
 export default function App() {
